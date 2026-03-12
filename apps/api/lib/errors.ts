@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { ApiResponse } from "@app-template/types";
+import { logger } from "@/lib/logger";
 
 /**
  * Base application error with HTTP status code.
@@ -55,6 +56,15 @@ export class RateLimitError extends AppError {
  */
 export function errorResponse(error: unknown): NextResponse<ApiResponse<null>> {
   if (error instanceof AppError) {
+    if (error.status >= 500) {
+      logger.error("Application error", {
+        code: error.code,
+        message: error.message,
+        stack: error.stack,
+      });
+    } else {
+      logger.warn("Client error", { code: error.code, message: error.message });
+    }
     return NextResponse.json(
       {
         data: null,
@@ -64,7 +74,10 @@ export function errorResponse(error: unknown): NextResponse<ApiResponse<null>> {
     );
   }
 
-  console.error("Unhandled error:", error);
+  logger.error("Unhandled error", {
+    error: error instanceof Error ? error.message : String(error),
+    stack: error instanceof Error ? error.stack : undefined,
+  });
 
   return NextResponse.json(
     {
