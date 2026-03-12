@@ -11,10 +11,16 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "SENTRY_AUTH_TOKEN": "REPLACE_WITH_SENTRY_AUTH_TOKEN"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "SENTRY_AUTH_TOKEN": "REPLACE_WITH_SENTRY_AUTH_TOKEN"
+      }
     }
   },
   "submit": {

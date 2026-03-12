@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@app-template/types"],
@@ -15,4 +16,18 @@ const nextConfig: NextConfig = {
   ],
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Sentry org + project (from sentry.io dashboard)
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  // Auth token for source map uploads (set in Vercel env vars + CI secrets)
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  // Silences the Sentry CLI output during builds
+  silent: !process.env.CI,
+  // Upload source maps to Sentry during production builds
+  widenClientFileUpload: true,
+  // Delete source maps from the build output after uploading to Sentry
+  sourcemaps: { deleteSourcemapsAfterUpload: true },
+  // Reduces bundle size by tree-shaking debug code
+  disableLogger: true,
+});

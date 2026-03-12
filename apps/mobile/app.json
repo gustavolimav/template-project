@@ -28,7 +28,14 @@
           "backgroundColor": "#FFFFFF"
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "REPLACE_WITH_SENTRY_ORG",
+          "project": "REPLACE_WITH_SENTRY_PROJECT"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
