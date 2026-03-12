@@ -7,7 +7,7 @@ name: CI
 # Required env vars: none (tests use mocks; no real Supabase needed)
 #
 # To add Supabase migration validation you need Docker available on the runner,
-# which is the case on ubuntu-latest (GitHub-hosted). The `supabase start` step
+# which is the case on ubuntu-latest (GitHub-hosted). The `supabase db start` step
 # spins up the local stack, applies all migrations, and shuts down. This catches
 # SQL errors before they ever reach production.
 
@@ -34,8 +34,7 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        # No `version` here — reads packageManager field from root package.json
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -64,26 +63,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-
       - name: Setup Supabase CLI
         uses: supabase/setup-cli@v1
         with:
           version: latest
 
-      # supabase start spins up Postgres in Docker, applies all migrations in
+      # supabase db start spins up Postgres in Docker, applies all migrations in
       # supabase/migrations/ in filename order, and runs seed.sql.
       # If any migration fails, this step fails and the PR is blocked.
-      - name: Start Supabase and apply migrations
+      - name: Apply migrations
         run: supabase db start
 
       - name: Stop Supabase
