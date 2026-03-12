@@ -19,10 +19,10 @@ Categorized by priority. Each item includes rationale for why it matters.
 - *Rationale: Cannot fix bugs you cannot see; critical before real users*
 
 ### CI/CD Pipeline
-- [ ] GitHub Actions: lint + type-check + test on every PR
-- [ ] GitHub Actions: EAS build on push to main
-- [ ] Vercel auto-deploy for API (via git integration)
-- [ ] Run Supabase migrations in CI
+- [x] GitHub Actions: lint + type-check + test on every PR (`.github/workflows/ci.yml`)
+- [x] GitHub Actions: EAS build on push to main (`.github/workflows/eas-build.yml`)
+- [x] Vercel auto-deploy for API (`.github/workflows/api-deploy.yml`)
+- [x] Run Supabase migrations in CI (`migration-check` job in `ci.yml`)
 - *Rationale: Prevents regressions; automates the release process*
 
 ### App Store Metadata

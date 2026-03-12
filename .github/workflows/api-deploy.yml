@@ -1,0 +1,73 @@
+name: API Deploy (Vercel)
+
+# Deploys apps/api to Vercel on every push to main.
+# Preview deployments for PRs are handled automatically by the Vercel GitHub
+# integration — this workflow handles production promotion only.
+#
+# Vercel git integration (recommended alternative):
+#   If you connect the repo in the Vercel dashboard and set the root directory
+#   to apps/api, Vercel will auto-deploy without this workflow. Use this
+#   workflow only if you need custom pre-deploy steps (e.g. run migrations).
+#
+# Required GitHub secrets:
+#   VERCEL_TOKEN   — create at https://vercel.com/account/tokens
+#   VERCEL_ORG_ID  — found in your Vercel project settings → General
+#   VERCEL_PROJECT_ID — found in your Vercel project settings → General
+#
+# Required Vercel environment variables (set in Vercel dashboard):
+#   SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, CORS_ORIGINS
+
+on:
+  push:
+    branches: [main]
+    # Only redeploy when API sources actually change
+    paths:
+      - apps/api/**
+      - packages/**
+      - pnpm-lock.yaml
+
+concurrency:
+  group: vercel-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy API to Vercel
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel@latest
+
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: apps/api
+
+      - name: Build
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: apps/api
+
+      - name: Deploy to production
+        id: deploy
+        run: |
+          URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$URL" >> $GITHUB_OUTPUT
+        working-directory: apps/api
