@@ -12,10 +12,11 @@ Categorized by priority. Each item includes rationale for why it matters.
 - *Rationale: Expected by users; increases engagement and retention*
 
 ### Error Tracking
-- [ ] Add `@sentry/react-native` to mobile
-- [ ] Add `@sentry/nextjs` to API
-- [ ] Configure source map uploading in EAS build
-- [ ] Set up error alerting
+- [x] Add `@sentry/react-native` to mobile (`lib/sentry.ts`, `app/_layout.tsx`)
+- [x] Add `@sentry/nextjs` to API (`sentry.server.config.ts`, `sentry.edge.config.ts`, `next.config.ts`)
+- [x] Configure source map uploading in EAS build (`eas.json` + `@sentry/react-native/expo` plugin)
+- [ ] Set up error alerting — configure in Sentry dashboard: Alerts → Create Alert Rule
+- [ ] Fill in `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_DSN`, `SENTRY_AUTH_TOKEN` in env files + Vercel
 - *Rationale: Cannot fix bugs you cannot see; critical before real users*
 
 ### CI/CD Pipeline
