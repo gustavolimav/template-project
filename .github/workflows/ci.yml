@@ -6,10 +6,8 @@ name: CI
 # Required secrets: none (all checks are local)
 # Required env vars: none (tests use mocks; no real Supabase needed)
 #
-# To add Supabase migration validation you need Docker available on the runner,
-# which is the case on ubuntu-latest (GitHub-hosted). The `supabase db start` step
-# spins up the local stack, applies all migrations, and shuts down. This catches
-# SQL errors before they ever reach production.
+# Uses corepack to install pnpm — reads the exact version from the
+# `packageManager` field in root package.json, avoiding version conflicts.
 
 on:
   pull_request:
@@ -32,15 +30,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        # No `version` here — reads packageManager field from root package.json
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+
+      - name: Enable corepack (installs pnpm from packageManager field)
+        run: corepack enable && corepack prepare --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
