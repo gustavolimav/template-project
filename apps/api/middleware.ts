@@ -4,12 +4,13 @@ import type { NextRequest } from "next/server";
 /**
  * Next.js Edge Middleware for authentication, security headers, and CORS.
  *
- * Runs on every /api/* request. Skips auth verification for:
+ * Runs on every /api/* request. Skips JWT auth verification for:
  * - /api/health (health check)
  * - /api/auth/* (auth endpoints handle their own auth)
+ * - /api/admin/* (admin endpoints use ADMIN_SECRET bearer token)
  */
 
-const PUBLIC_PATHS = ["/api/health", "/api/auth"];
+const PUBLIC_PATHS = ["/api/health", "/api/auth", "/api/admin"];
 
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some(

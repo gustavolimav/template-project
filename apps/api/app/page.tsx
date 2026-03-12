@@ -111,6 +111,18 @@ const endpoints = [
     auth: false,
     description: "Email verification token handler",
   },
+  {
+    method: "GET",
+    path: "/api/admin/migrations",
+    auth: true,
+    description: "List all migrations and their applied status",
+  },
+  {
+    method: "POST",
+    path: "/api/admin/migrations",
+    auth: true,
+    description: "Run all pending migrations (?dry_run=true to preview)",
+  },
 ];
 
 function methodColor(method: string): React.CSSProperties {

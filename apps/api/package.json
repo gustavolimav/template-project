@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000",
-    "build": "next build",
+    "build": "node scripts/copy-migrations.js && next build",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",
     "type-check": "tsc --noEmit",
@@ -17,6 +17,7 @@
     "@supabase/supabase-js": "^2.49.0",
     "jose": "^5.9.0",
     "next": "^15.1.0",
+    "postgres": "^3.4.8",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
