@@ -3,6 +3,12 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@app-template/types"],
+  // Include migration SQL files in the serverless function bundle.
+  // The files are copied from supabase/migrations/ by scripts/copy-migrations.js
+  // during the build step, before next build runs.
+  outputFileTracingIncludes: {
+    "/api/admin/migrations": ["./migrations/**/*.sql"],
+  },
   headers: async () => [
     {
       source: "/api/:path*",
