@@ -5,6 +5,10 @@ import { queryClient } from "@/lib/queryClient";
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri } from "expo-auth-session";
+import {
+  registerDeviceToken,
+  unregisterDeviceToken,
+} from "@/hooks/usePushNotifications";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -34,11 +38,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     });
 
-    // Listen for auth state changes
+    // Listen for auth state changes and manage device token registration
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
+      if (event === "SIGNED_IN" && session?.user) {
+        registerDeviceToken(session.user.id).catch(() => {});
+      }
+      if (event === "SIGNED_OUT") {
+        // token already removed in signOut — nothing to do here
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -87,7 +97,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const refreshToken = url.searchParams.get("refresh_token");
 
         if (accessToken && refreshToken) {
-          await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+          await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
         }
       }
     }
@@ -111,6 +124,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
+    const {
+      data: { session: currentSession },
+    } = await supabase.auth.getSession();
+    if (currentSession?.user) {
+      await unregisterDeviceToken(currentSession.user.id).catch(() => {});
+    }
     await supabase.auth.signOut();
     queryClient.clear();
   }, []);

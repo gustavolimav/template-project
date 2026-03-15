@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/react-native";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { initSentry } from "@/lib/sentry";
+import { useNotificationListeners } from "@/hooks/usePushNotifications";
 
 initSentry();
 
@@ -18,6 +19,8 @@ initSentry();
  * Sentry.wrap() adds the crash boundary and automatic session tracking.
  */
 function RootLayout() {
+  useNotificationListeners();
+
   return (
     <SafeAreaProvider>
       <AuthProvider>
