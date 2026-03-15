@@ -7,6 +7,7 @@ import {
   Alert,
 } from "react-native";
 import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -51,24 +52,29 @@ export default function ForgotPasswordScreen() {
         className="flex-1"
       >
         <View className="flex-1 justify-center p-md">
-          <View className="mb-2xl">
-            <Text className="text-3xl font-bold text-gray-900 mb-xs">
-              Reset Password
-            </Text>
-            <Text className="text-base text-gray-500">
-              Enter your email to receive a reset link
-            </Text>
+          {/* Brand mark */}
+          <View className="items-center mb-2xl">
+            <View className="w-16 h-16 bg-primary-100 rounded-2xl items-center justify-center mb-sm">
+              <Ionicons name="mail-outline" size={30} color="#4F46E5" />
+            </View>
           </View>
 
+          <Text className="text-3xl font-bold text-gray-900 mb-xs">
+            Redefinir senha
+          </Text>
+          <Text className="text-base text-gray-500 mb-2xl">
+            Digite seu e-mail para receber um link de redefinição
+          </Text>
+
           {error && (
-            <Text className="text-sm text-error text-center mb-md">
-              {error}
-            </Text>
+            <View className="bg-red-50 border border-red-200 rounded-xl px-md py-sm mb-md">
+              <Text className="text-sm text-error text-center">{error}</Text>
+            </View>
           )}
 
           <Input
-            label="Email"
-            placeholder="you@example.com"
+            label="E-mail"
+            placeholder="seu@email.com"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -77,14 +83,14 @@ export default function ForgotPasswordScreen() {
 
           <View className="mt-sm">
             <Button
-              title="Send Reset Link"
+              title="Enviar link de redefinição"
               onPress={handleReset}
               loading={loading}
             />
           </View>
           <View className="mt-sm">
             <Button
-              title="Back to Sign In"
+              title="Voltar para o login"
               onPress={() => router.back()}
               variant="outline"
             />

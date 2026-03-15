@@ -17,6 +17,7 @@
     "@app-template/ui": "workspace:*",
     "@app-template/utils": "workspace:*",
     "@expo/metro-runtime": "^6.1.2",
+    "@expo/vector-icons": "^15.1.1",
     "@sentry/react-native": "^8.4.0",
     "@supabase/supabase-js": "^2.49.0",
     "@tanstack/react-query": "^5.62.0",

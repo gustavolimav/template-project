@@ -7,7 +7,7 @@ interface ButtonProps {
   onPress: () => void;
   loading?: boolean;
   disabled?: boolean;
-  variant?: "primary" | "secondary" | "outline";
+  variant?: "primary" | "secondary" | "outline" | "danger";
 }
 
 export function Button({
@@ -20,33 +20,32 @@ export function Button({
   const isDisabled = disabled || loading;
 
   const buttonClass = [
-    "h-12 rounded-md justify-center items-center px-lg",
+    "h-14 rounded-xl justify-center items-center px-lg",
     variant === "primary" && "bg-primary-600",
-    variant === "secondary" && "bg-gray-50",
-    variant === "outline" && "bg-transparent border border-gray-200",
+    variant === "secondary" && "bg-gray-100",
+    variant === "outline" && "bg-transparent border-2 border-gray-200",
+    variant === "danger" && "bg-error",
     isDisabled && "opacity-50",
   ]
     .filter(Boolean)
     .join(" ");
+
+  const textColor =
+    variant === "primary" || variant === "danger"
+      ? colors.white
+      : colors.primary[600];
 
   return (
     <TouchableOpacity
       className={buttonClass}
       onPress={onPress}
       disabled={isDisabled}
-      activeOpacity={0.7}
+      activeOpacity={0.75}
     >
       {loading ? (
-        <ActivityIndicator
-          color={variant === "primary" ? colors.white : colors.primary[600]}
-        />
+        <ActivityIndicator color={textColor} />
       ) : (
-        <Text
-          className={[
-            "text-base font-semibold",
-            variant === "primary" ? "text-white" : "text-primary-600",
-          ].join(" ")}
-        >
+        <Text className="text-base font-semibold" style={{ color: textColor }}>
           {title}
         </Text>
       )}

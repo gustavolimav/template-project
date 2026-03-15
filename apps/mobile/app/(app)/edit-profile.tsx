@@ -9,11 +9,16 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { useProfile, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfile";
+import {
+  useProfile,
+  useUpdateProfile,
+  useUploadAvatar,
+} from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
 import { colors } from "@app-template/ui";
 
@@ -69,7 +74,9 @@ export default function EditProfileScreen() {
 
   const handleSave = async () => {
     try {
-      await updateProfile.mutateAsync({ displayName: displayName.trim() || undefined });
+      await updateProfile.mutateAsync({
+        displayName: displayName.trim() || undefined,
+      });
       router.back();
     } catch {
       Alert.alert("Erro", "Não foi possível salvar as alterações.");
@@ -80,64 +87,79 @@ export default function EditProfileScreen() {
   const avatarUrl = profile?.avatarUrl;
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
       <ScrollView
         contentContainerClassName="p-md pb-16"
         keyboardShouldPersistTaps="handled"
       >
         {/* Avatar */}
-        <View className="items-center mb-2xl mt-lg">
+        <View className="items-center mb-2xl mt-xl">
           <TouchableOpacity onPress={handlePickImage} activeOpacity={0.8}>
-            <View className="relative">
-              {avatarUrl ? (
-                <Image
-                  source={{ uri: avatarUrl }}
-                  className="w-[96px] h-[96px] rounded-full"
-                />
-              ) : (
-                <View className="w-[96px] h-[96px] rounded-full bg-primary-600 justify-center items-center">
-                  <Text className="text-white text-2xl font-bold">
-                    {getInitials(email)}
-                  </Text>
-                </View>
-              )}
-              {/* Camera overlay */}
+            <View>
               <View
-                className="absolute bottom-0 right-0 w-8 h-8 rounded-full justify-center items-center border-2 border-white"
+                className="rounded-full border-4 border-white overflow-hidden"
+                style={{
+                  width: 108,
+                  height: 108,
+                  backgroundColor: colors.primary[600],
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.12,
+                  shadowRadius: 8,
+                }}
+              >
+                {avatarUrl ? (
+                  <Image
+                    source={{ uri: avatarUrl }}
+                    style={{ width: 108, height: 108 }}
+                  />
+                ) : (
+                  <View className="flex-1 items-center justify-center">
+                    <Text className="text-white text-3xl font-bold">
+                      {getInitials(email)}
+                    </Text>
+                  </View>
+                )}
+              </View>
+              {/* Camera badge */}
+              <View
+                className="absolute bottom-0 right-0 w-9 h-9 rounded-full items-center justify-center border-2 border-white"
                 style={{ backgroundColor: colors.primary[600] }}
               >
                 {uploadAvatar.isPending ? (
                   <ActivityIndicator size="small" color="#fff" />
                 ) : (
-                  <Text className="text-white text-xs">📷</Text>
+                  <Ionicons name="camera" size={16} color="#fff" />
                 )}
               </View>
             </View>
           </TouchableOpacity>
-          <Text className="text-sm text-gray-500 mt-sm">
+          <Text className="text-sm text-gray-400 mt-md">
             Toque para alterar a foto
           </Text>
         </View>
 
-        {/* Form */}
-        <Input
-          label="Nome de exibição"
-          placeholder="Seu nome"
-          value={displayName}
-          onChangeText={setDisplayName}
-          autoComplete="name"
-          returnKeyType="done"
-        />
+        {/* Form card */}
+        <View className="bg-white rounded-2xl p-md shadow-sm mb-md">
+          <Input
+            label="Nome de exibição"
+            placeholder="Seu nome"
+            value={displayName}
+            onChangeText={setDisplayName}
+            autoComplete="name"
+            returnKeyType="done"
+          />
 
-        <Input
-          label="E-mail"
-          value={email}
-          editable={false}
-          className="opacity-50"
-        />
-        <Text className="text-xs text-gray-500 -mt-sm mb-md">
-          O e-mail não pode ser alterado aqui.
-        </Text>
+          <Input
+            label="E-mail"
+            value={email}
+            editable={false}
+            style={{ opacity: 0.5 }}
+          />
+          <Text className="text-xs text-gray-400 -mt-sm mb-xs ml-xs">
+            O e-mail não pode ser alterado aqui.
+          </Text>
+        </View>
 
         <Button
           title="Salvar alterações"
