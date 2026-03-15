@@ -4,12 +4,13 @@ import type { NextRequest } from "next/server";
 /**
  * Next.js Edge Middleware for authentication, security headers, and CORS.
  *
- * Runs on every /api/* request. Skips auth verification for:
+ * Runs on every /api/* request. Skips JWT auth verification for:
  * - /api/health (health check)
  * - /api/auth/* (auth endpoints handle their own auth)
+ * - /api/admin/* (admin endpoints use ADMIN_SECRET bearer token)
  */
 
-const PUBLIC_PATHS = ["/api/health", "/api/auth"];
+const PUBLIC_PATHS = ["/api/health", "/api/auth", "/api/admin"];
 
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some(
@@ -37,8 +38,30 @@ function getSecurityHeaders(): Record<string, string> {
   };
 }
 
+function logRequest(
+  method: string,
+  pathname: string,
+  status: number,
+  durationMs: number,
+  extra?: Record<string, unknown>,
+): void {
+  console.log(
+    JSON.stringify({
+      level: status >= 500 ? "error" : status >= 400 ? "warn" : "info",
+      message: "api request",
+      method,
+      path: pathname,
+      status,
+      durationMs,
+      timestamp: new Date().toISOString(),
+      ...extra,
+    }),
+  );
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const start = Date.now();
 
   // Handle CORS preflight
   if (request.method === "OPTIONS") {
@@ -57,12 +80,18 @@ export async function middleware(request: NextRequest) {
     })) {
       response.headers.set(key, value);
     }
+    logRequest(request.method, pathname, 200, Date.now() - start, {
+      auth: "public",
+    });
     return response;
   }
 
   // Extract and verify Bearer token
   const authHeader = request.headers.get("authorization");
   if (!authHeader?.startsWith("Bearer ")) {
+    logRequest(request.method, pathname, 401, Date.now() - start, {
+      reason: "missing_token",
+    });
     return NextResponse.json(
       {
         data: null,
@@ -86,6 +115,9 @@ export async function middleware(request: NextRequest) {
   })) {
     response.headers.set(key, value);
   }
+  logRequest(request.method, pathname, 200, Date.now() - start, {
+    auth: "bearer",
+  });
   return response;
 }
 

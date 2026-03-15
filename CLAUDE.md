@@ -172,26 +172,91 @@ export async function GET(request: Request): Promise<NextResponse<ApiResponse<Yo
 ## Environment Variables
 
 ### API (`apps/api/.env.local`)
+
+These variable names are set automatically when you connect Supabase to your Vercel project via the Vercel integration. Copy them to `.env.local` for local development.
+
 | Variable | Description | Required |
 |---|---|---|
-| `SUPABASE_URL` | Supabase API URL | Yes |
-| `SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server only) | Yes |
-| `CORS_ORIGINS` | Comma-separated allowed origins | No |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key — server only, never expose to client | Yes |
+| `POSTGRES_URL_NON_POOLING` | Direct Postgres connection for migrations (DDL) | Yes (migrations) |
+| `ADMIN_SECRET` | Bearer token for `/api/admin/*` — generate with `openssl rand -hex 32` | Yes (migrations) |
+| `CORS_ORIGINS` | Comma-separated allowed origins for mobile app | No |
+| `SENTRY_DSN` | Sentry error tracking DSN | No |
 
 ### Mobile (`apps/mobile/.env`)
+
 | Variable | Description | Required |
 |---|---|---|
-| `EXPO_PUBLIC_SUPABASE_URL` | Supabase API URL | Yes |
+| `EXPO_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes |
 | `EXPO_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
-| `EXPO_PUBLIC_API_URL` | API base URL | Yes |
+| `EXPO_PUBLIC_API_URL` | API base URL (Vercel URL or machine IP for local) | Yes |
+| `EXPO_PUBLIC_SENTRY_DSN` | Sentry DSN for mobile error tracking | No |
+
+## Multi-Environment Mobile Deployment
+
+The mobile app has three EAS build profiles defined in `apps/mobile/eas.json`:
+
+### development — iOS Simulator (local dev)
+```bash
+eas build --profile development --platform ios
+```
+- Runs on the iOS Simulator
+- Reads `.env` file locally — point to local or cloud Supabase
+- Required because MMKV needs the dev client (Expo Go won't work)
+- Build once, then start with `pnpm --filter @app-template/mobile dev`
+
+### preview — Internal TestFlight testing
+```bash
+eas build --profile preview --platform ios
+```
+- Distributes via TestFlight (internal testers)
+- Env vars are baked in from `eas.json` → `preview.env`
+- Fill in `REPLACE_WITH_*` values in `eas.json` before building
+- Use for QA, stakeholder demos, beta testing
+
+### production — App Store
+```bash
+eas build --profile production --platform ios
+eas submit --platform ios
+```
+- Submits to App Store
+- Env vars baked in from `eas.json` → `production.env`
+- Same cloud URLs as preview — no separate staging env needed for this template
+
+### Setup steps before first EAS build
+1. Fill in `REPLACE_WITH_*` values in `apps/mobile/eas.json`
+2. Fill in Apple credentials in `eas.json` → `submit.production.ios`
+3. Run migrations on production DB: `POST /api/admin/migrations`
+4. Build: `eas build --profile preview --platform ios`
+
+## Running Database Migrations
+
+Migrations live in `supabase/migrations/` and are applied via the admin API endpoint (no CLI needed on production):
+
+```bash
+# Check what's pending
+curl -H "Authorization: Bearer $ADMIN_SECRET" https://your-app.vercel.app/api/admin/migrations
+
+# Apply pending migrations
+curl -X POST -H "Authorization: Bearer $ADMIN_SECRET" https://your-app.vercel.app/api/admin/migrations
+
+# Preview without applying
+curl -X POST -H "Authorization: Bearer $ADMIN_SECRET" \
+  "https://your-app.vercel.app/api/admin/migrations?dry_run=true"
+```
+
+Local development still uses `pnpm supabase:reset` which re-applies all migrations via the Supabase CLI.
 
 ## Common Gotchas
 
 - **MMKV requires a dev client**: Cannot use Expo Go. Run `eas build --profile development` first
 - **Metro monorepo**: `metro.config.js` must set `watchFolders` to monorepo root
-- **Mobile local dev**: Use machine IP (not localhost) for `EXPO_PUBLIC_API_URL` and `EXPO_PUBLIC_SUPABASE_URL`
+- **Mobile local dev**: Use machine IP (not localhost) for `EXPO_PUBLIC_API_URL` when testing on a physical device
 - **Apple Sign-In**: Required by App Store Review if Google OAuth is offered
 - **Supabase local ports**: API=54321, DB=54322, Studio=54323, Email=54324
 - **pnpm + Jest**: `transformIgnorePatterns` in `jest.config.js` must allow workspace packages
 - **Two test frameworks**: Vitest for API/packages, Jest for mobile (technical constraint, not preference)
+- **Duplicate env vars**: Next.js uses the first occurrence of a variable — avoid duplicates in `.env.local`
+- **`.env` vs `.env.local`**: Next.js dev server only loads `.env.local` (not `.env`) — always use `.env.local`
