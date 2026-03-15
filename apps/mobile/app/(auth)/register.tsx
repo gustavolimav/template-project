@@ -7,6 +7,7 @@ import {
   Platform,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,19 +22,26 @@ export default function RegisterScreen() {
   const { signUpWithEmail } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [consentGiven, setConsentGiven] = useState(false);
 
   const handleRegister = async (email: string, password: string) => {
+    if (!consentGiven) {
+      setError(
+        "Você precisa aceitar a Política de Privacidade para continuar.",
+      );
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
       await signUpWithEmail(email, password);
       Alert.alert(
-        "Check your email",
-        "We've sent you a verification link. Please verify your email to continue.",
+        "Verifique seu e-mail",
+        "Enviamos um link de verificação. Por favor, verifique seu e-mail para continuar.",
         [{ text: "OK", onPress: () => router.replace("/(auth)/login") }],
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      setError(err instanceof Error ? err.message : "Falha no cadastro");
     } finally {
       setLoading(false);
     }
@@ -51,15 +59,12 @@ export default function RegisterScreen() {
         >
           <View style={styles.header}>
             <Text style={[styles.title, { color: Colors.light.text }]}>
-              Create Account
+              Criar Conta
             </Text>
             <Text
-              style={[
-                styles.subtitle,
-                { color: Colors.light.textSecondary },
-              ]}
+              style={[styles.subtitle, { color: Colors.light.textSecondary }]}
             >
-              Sign up to get started
+              Cadastre-se para começar
             </Text>
           </View>
 
@@ -75,22 +80,52 @@ export default function RegisterScreen() {
             loading={loading}
           />
 
+          {/* LGPD consent — required before account creation (Art. 7, I) */}
+          <TouchableOpacity
+            style={styles.consentRow}
+            onPress={() => setConsentGiven((v) => !v)}
+            activeOpacity={0.7}
+          >
+            <View
+              style={[
+                styles.checkbox,
+                {
+                  borderColor: consentGiven
+                    ? Colors.light.primary
+                    : Colors.light.border,
+                  backgroundColor: consentGiven
+                    ? Colors.light.primary
+                    : "transparent",
+                },
+              ]}
+            >
+              {consentGiven && (
+                <Text style={styles.checkmark}>✓</Text>
+              )}
+            </View>
+            <Text
+              style={[styles.consentText, { color: Colors.light.textSecondary }]}
+            >
+              Li e concordo com a{" "}
+              <Text style={{ color: Colors.light.primary }}>
+                Política de Privacidade
+              </Text>{" "}
+              e autorizo o tratamento dos meus dados pessoais conforme a{" "}
+              <Text style={{ color: Colors.light.primary }}>LGPD</Text>.
+            </Text>
+          </TouchableOpacity>
+
           <OAuthButtons />
 
           <View style={styles.footer}>
             <Text
-              style={[
-                styles.footerText,
-                { color: Colors.light.textSecondary },
-              ]}
+              style={[styles.footerText, { color: Colors.light.textSecondary }]}
             >
-              Already have an account?{" "}
+              Já tem uma conta?{" "}
             </Text>
             <Link href="/(auth)/login">
-              <Text
-                style={[styles.linkText, { color: Colors.light.primary }]}
-              >
-                Sign In
+              <Text style={[styles.linkText, { color: Colors.light.primary }]}>
+                Entrar
               </Text>
             </Link>
           </View>
@@ -128,6 +163,32 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
     textAlign: "center",
     marginBottom: Layout.spacing.md,
+  },
+  consentRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginTop: Layout.spacing.md,
+    gap: Layout.spacing.sm,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 2,
+    flexShrink: 0,
+  },
+  checkmark: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  consentText: {
+    flex: 1,
+    fontSize: fontSize.sm,
+    lineHeight: 20,
   },
   linkText: {
     fontSize: fontSize.sm,

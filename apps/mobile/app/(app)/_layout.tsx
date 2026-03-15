@@ -24,6 +24,9 @@ export default function AppLayout() {
         headerShown: true,
         animation: "slide_from_right",
       }}
-    />
+    >
+      {/* Home screen has its own SafeAreaView layout — no header needed */}
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+    </Stack>
   );
 }
