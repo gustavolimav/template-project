@@ -1,5 +1,6 @@
 {
   "name": "app-template",
+  "version": "1.1.0",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "scripts": {
@@ -13,9 +14,21 @@
     "supabase:stop": "npx supabase stop",
     "supabase:reset": "npx supabase db reset",
     "supabase:migration": "npx supabase migration new",
-    "supabase:status": "npx supabase status"
+    "supabase:status": "npx supabase status",
+    "prepare": "husky",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "supabase:types": "npx supabase gen types typescript --local > packages/types/src/database.generated.ts"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.4",
+    "@commitlint/config-conventional": "^20.4.4",
+    "eslint": "^9.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1",
+    "standard-version": "^9.5.0",
     "turbo": "^2.3.0"
   },
   "pnpm": {

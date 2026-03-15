@@ -1,17 +1,18 @@
-/**
- * Database row types matching Supabase schema.
- * Keep in sync with supabase/migrations/.
- */
+// Re-export generated types — do not edit manually.
+// Regenerate with: pnpm supabase:types
+export type { Database, Json } from "./database.generated";
 
-/**
- * Row in the public.profiles table.
- * Auto-created by trigger when a user signs up via Supabase Auth.
- */
-export interface ProfileRow {
-  id: string;
-  email: string;
-  display_name: string | null;
-  avatar_url: string | null;
-  created_at: string;
-  updated_at: string;
-}
+// Convenience helpers
+import type { Database } from "./database.generated";
+
+export type Tables<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Row"];
+export type TablesInsert<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Insert"];
+export type TablesUpdate<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Update"];
+export type Enums<T extends keyof Database["public"]["Enums"]> =
+  Database["public"]["Enums"][T];
+
+/** Row in the public.profiles table. */
+export type ProfileRow = Tables<"profiles">;
