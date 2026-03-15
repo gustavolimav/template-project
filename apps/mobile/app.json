@@ -22,6 +22,9 @@
     "plugins": [
       "expo-router",
       "expo-apple-authentication",
+      ["expo-image-picker", {
+        "photosPermission": "Permitir que $(BUNDLE_DISPLAY_NAME) acesse suas fotos para definir uma foto de perfil."
+      }],
       [
         "expo-splash-screen",
         {

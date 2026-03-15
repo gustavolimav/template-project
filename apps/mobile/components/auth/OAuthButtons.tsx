@@ -1,16 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet, Platform } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
-import { Layout } from "@/constants/layout";
-import { Colors } from "@/constants/colors";
-import { fontSize } from "@app-template/ui";
 
 export function OAuthButtons() {
   const { signInWithGoogle, signInWithApple } = useAuth();
-  const [loading, setLoading] = React.useState<"google" | "apple" | null>(
-    null,
-  );
+  const [loading, setLoading] = React.useState<"google" | "apple" | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
   const handleGoogleSignIn = async () => {
@@ -38,17 +33,12 @@ export function OAuthButtons() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.divider}>
-        <View
-          style={[styles.line, { backgroundColor: Colors.light.border }]}
-        />
-        <Text style={[styles.dividerText, { color: Colors.light.textSecondary }]}>
-          or continue with
-        </Text>
-        <View
-          style={[styles.line, { backgroundColor: Colors.light.border }]}
-        />
+    <View className="mt-lg">
+      {/* Divider */}
+      <View className="flex-row items-center mb-lg">
+        <View className="flex-1 h-px bg-gray-200" />
+        <Text className="text-sm text-gray-500 px-md">or continue with</Text>
+        <View className="flex-1 h-px bg-gray-200" />
       </View>
 
       <Button
@@ -60,7 +50,7 @@ export function OAuthButtons() {
       />
 
       {Platform.OS === "ios" && (
-        <View style={styles.appleButton}>
+        <View className="mt-sm">
           <Button
             title="Sign in with Apple"
             onPress={handleAppleSignIn}
@@ -72,37 +62,8 @@ export function OAuthButtons() {
       )}
 
       {error && (
-        <Text style={[styles.error, { color: Colors.light.error }]}>
-          {error}
-        </Text>
+        <Text className="text-xs text-error text-center mt-sm">{error}</Text>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: Layout.spacing.lg,
-  },
-  divider: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: Layout.spacing.lg,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-  },
-  dividerText: {
-    paddingHorizontal: Layout.spacing.md,
-    fontSize: fontSize.sm,
-  },
-  appleButton: {
-    marginTop: Layout.spacing.sm,
-  },
-  error: {
-    fontSize: fontSize.xs,
-    textAlign: "center",
-    marginTop: Layout.spacing.sm,
-  },
-});

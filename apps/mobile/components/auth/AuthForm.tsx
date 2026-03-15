@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { validateEmail, validatePassword } from "@app-template/utils";
-import { Layout } from "@/constants/layout";
 
 interface AuthFormProps {
   mode: "login" | "register";
@@ -44,7 +43,7 @@ export function AuthForm({ mode, onSubmit, loading = false }: AuthFormProps) {
   };
 
   return (
-    <View style={styles.container}>
+    <View className="w-full">
       <Input
         label="Email"
         placeholder="you@example.com"
@@ -74,7 +73,7 @@ export function AuthForm({ mode, onSubmit, loading = false }: AuthFormProps) {
           error={errors.confirmPassword}
         />
       )}
-      <View style={styles.buttonContainer}>
+      <View className="mt-sm">
         <Button
           title={mode === "login" ? "Sign In" : "Create Account"}
           onPress={handleSubmit}
@@ -84,12 +83,3 @@ export function AuthForm({ mode, onSubmit, loading = false }: AuthFormProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-  },
-  buttonContainer: {
-    marginTop: Layout.spacing.sm,
-  },
-});

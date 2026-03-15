@@ -1,9 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { Button } from "./Button";
-import { Colors } from "@/constants/colors";
-import { Layout } from "@/constants/layout";
-import { fontSize } from "@app-template/ui";
 
 interface ErrorViewProps {
   message: string;
@@ -12,32 +9,13 @@ interface ErrorViewProps {
 
 export function ErrorView({ message, onRetry }: ErrorViewProps) {
   return (
-    <View style={styles.container}>
-      <Text style={[styles.message, { color: Colors.light.error }]}>
-        {message}
-      </Text>
+    <View className="flex-1 justify-center items-center p-lg">
+      <Text className="text-base text-error text-center mb-md">{message}</Text>
       {onRetry && (
-        <View style={styles.button}>
+        <View className="min-w-[120px]">
           <Button title="Try Again" onPress={onRetry} variant="outline" />
         </View>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: Layout.spacing.lg,
-  },
-  message: {
-    fontSize: fontSize.base,
-    textAlign: "center",
-    marginBottom: Layout.spacing.md,
-  },
-  button: {
-    minWidth: 120,
-  },
-});

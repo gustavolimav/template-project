@@ -2,69 +2,69 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAuth } from "@/hooks/useAuth";
-import { Colors } from "@/constants/colors";
-import { Layout } from "@/constants/layout";
-import { fontSize, fontWeight } from "@app-template/ui";
+import { colors } from "@app-template/ui";
 
 export default function RegisterScreen() {
   const { signUpWithEmail } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [consentGiven, setConsentGiven] = useState(false);
 
   const handleRegister = async (email: string, password: string) => {
+    if (!consentGiven) {
+      setError(
+        "Você precisa aceitar a Política de Privacidade para continuar.",
+      );
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
       await signUpWithEmail(email, password);
       Alert.alert(
-        "Check your email",
-        "We've sent you a verification link. Please verify your email to continue.",
+        "Verifique seu e-mail",
+        "Enviamos um link de verificação. Por favor, verifique seu e-mail para continuar.",
         [{ text: "OK", onPress: () => router.replace("/(auth)/login") }],
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      setError(err instanceof Error ? err.message : "Falha no cadastro");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardView}
+        className="flex-1"
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerClassName="flex-grow justify-center p-md"
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.header}>
-            <Text style={[styles.title, { color: Colors.light.text }]}>
-              Create Account
+          <View className="mb-2xl">
+            <Text className="text-3xl font-bold text-gray-900 mb-xs">
+              Criar Conta
             </Text>
-            <Text
-              style={[
-                styles.subtitle,
-                { color: Colors.light.textSecondary },
-              ]}
-            >
-              Sign up to get started
+            <Text className="text-base text-gray-500">
+              Cadastre-se para começar
             </Text>
           </View>
 
           {error && (
-            <Text style={[styles.errorText, { color: Colors.light.error }]}>
+            <Text className="text-sm text-error text-center mb-md">
               {error}
             </Text>
           )}
@@ -75,22 +75,42 @@ export default function RegisterScreen() {
             loading={loading}
           />
 
+          {/* LGPD consent — required before account creation (Art. 7, I) */}
+          <TouchableOpacity
+            className="flex-row items-start mt-md gap-sm"
+            onPress={() => setConsentGiven((v) => !v)}
+            activeOpacity={0.7}
+          >
+            <View
+              className="w-5 h-5 border-2 rounded justify-center items-center mt-0.5 shrink-0"
+              style={{
+                borderColor: consentGiven
+                  ? colors.primary[600]
+                  : colors.gray[200],
+                backgroundColor: consentGiven
+                  ? colors.primary[600]
+                  : "transparent",
+              }}
+            >
+              {consentGiven && (
+                <Text className="text-white text-xs font-bold">✓</Text>
+              )}
+            </View>
+            <Text className="flex-1 text-sm text-gray-500 leading-5">
+              Li e concordo com a{" "}
+              <Text className="text-primary-600">Política de Privacidade</Text>{" "}
+              e autorizo o tratamento dos meus dados pessoais conforme a{" "}
+              <Text className="text-primary-600">LGPD</Text>.
+            </Text>
+          </TouchableOpacity>
+
           <OAuthButtons />
 
-          <View style={styles.footer}>
-            <Text
-              style={[
-                styles.footerText,
-                { color: Colors.light.textSecondary },
-              ]}
-            >
-              Already have an account?{" "}
-            </Text>
+          <View className="flex-row justify-center mt-2xl">
+            <Text className="text-sm text-gray-500">Já tem uma conta? </Text>
             <Link href="/(auth)/login">
-              <Text
-                style={[styles.linkText, { color: Colors.light.primary }]}
-              >
-                Sign In
+              <Text className="text-sm font-medium text-primary-600">
+                Entrar
               </Text>
             </Link>
           </View>
@@ -99,46 +119,3 @@ export default function RegisterScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    padding: Layout.screenPadding,
-  },
-  header: {
-    marginBottom: Layout.spacing["2xl"],
-  },
-  title: {
-    fontSize: fontSize["3xl"],
-    fontWeight: fontWeight.bold,
-    marginBottom: Layout.spacing.xs,
-  },
-  subtitle: {
-    fontSize: fontSize.base,
-  },
-  errorText: {
-    fontSize: fontSize.sm,
-    textAlign: "center",
-    marginBottom: Layout.spacing.md,
-  },
-  linkText: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: Layout.spacing["2xl"],
-  },
-  footerText: {
-    fontSize: fontSize.sm,
-  },
-});
