@@ -12,7 +12,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "inputs": ["$TURBO_DEFAULT$", "../../supabase/migrations/**"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**", "migrations/**"]
     },
     "dev": {
       "cache": false,
