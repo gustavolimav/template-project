@@ -1,0 +1,24 @@
+# Migrations Admin API
+# Requires: ADMIN_SECRET env var set in http-client.env.json
+#
+# VS Code: install "REST Client" extension (humao.rest-client)
+# JetBrains: built-in HTTP client supports this format natively
+
+
+### List all migrations (shows applied/pending status)
+GET {{baseUrl}}/api/admin/migrations
+Authorization: Bearer {{adminSecret}}
+
+
+### Preview pending migrations (dry run — no DB changes)
+POST {{baseUrl}}/api/admin/migrations?dry_run=true
+Authorization: Bearer {{adminSecret}}
+
+
+### Run all pending migrations
+POST {{baseUrl}}/api/admin/migrations
+Authorization: Bearer {{adminSecret}}
+
+
+### Unauthorized (should return 401)
+GET {{baseUrl}}/api/admin/migrations

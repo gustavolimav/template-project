@@ -1,0 +1,6 @@
+# Health Check
+# No authentication required
+
+
+### Health check
+GET {{baseUrl}}/api/health
