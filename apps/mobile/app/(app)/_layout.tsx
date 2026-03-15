@@ -27,6 +27,7 @@ export default function AppLayout() {
     >
       {/* Home screen has its own SafeAreaView layout — no header needed */}
       <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="edit-profile" options={{ title: "Editar Perfil" }} />
     </Stack>
   );
 }

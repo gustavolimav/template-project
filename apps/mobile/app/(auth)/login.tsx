@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -13,9 +12,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAuth } from "@/hooks/useAuth";
-import { Colors } from "@/constants/colors";
-import { Layout } from "@/constants/layout";
-import { fontSize, fontWeight } from "@app-template/ui";
 
 export default function LoginScreen() {
   const { signInWithEmail } = useAuth();
@@ -35,45 +31,35 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardView}
+        className="flex-1"
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerClassName="flex-grow justify-center p-md"
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.header}>
-            <Text style={[styles.title, { color: Colors.light.text }]}>
+          <View className="mb-2xl">
+            <Text className="text-3xl font-bold text-gray-900 mb-xs">
               Welcome Back
             </Text>
-            <Text
-              style={[
-                styles.subtitle,
-                { color: Colors.light.textSecondary },
-              ]}
-            >
+            <Text className="text-base text-gray-500">
               Sign in to your account
             </Text>
           </View>
 
           {error && (
-            <Text style={[styles.errorText, { color: Colors.light.error }]}>
+            <Text className="text-sm text-error text-center mb-md">
               {error}
             </Text>
           )}
 
           <AuthForm mode="login" onSubmit={handleLogin} loading={loading} />
 
-          <TouchableOpacity style={styles.forgotPassword}>
+          <TouchableOpacity className="items-end mt-sm">
             <Link href="/(auth)/forgot-password">
-              <Text
-                style={[
-                  styles.linkText,
-                  { color: Colors.light.primary },
-                ]}
-              >
+              <Text className="text-sm font-medium text-primary-600">
                 Forgot password?
               </Text>
             </Link>
@@ -81,19 +67,12 @@ export default function LoginScreen() {
 
           <OAuthButtons />
 
-          <View style={styles.footer}>
-            <Text
-              style={[
-                styles.footerText,
-                { color: Colors.light.textSecondary },
-              ]}
-            >
+          <View className="flex-row justify-center mt-2xl">
+            <Text className="text-sm text-gray-500">
               Don't have an account?{" "}
             </Text>
             <Link href="/(auth)/register">
-              <Text
-                style={[styles.linkText, { color: Colors.light.primary }]}
-              >
+              <Text className="text-sm font-medium text-primary-600">
                 Sign Up
               </Text>
             </Link>
@@ -103,50 +82,3 @@ export default function LoginScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    padding: Layout.screenPadding,
-  },
-  header: {
-    marginBottom: Layout.spacing["2xl"],
-  },
-  title: {
-    fontSize: fontSize["3xl"],
-    fontWeight: fontWeight.bold,
-    marginBottom: Layout.spacing.xs,
-  },
-  subtitle: {
-    fontSize: fontSize.base,
-  },
-  errorText: {
-    fontSize: fontSize.sm,
-    textAlign: "center",
-    marginBottom: Layout.spacing.md,
-  },
-  forgotPassword: {
-    alignItems: "flex-end",
-    marginTop: Layout.spacing.sm,
-  },
-  linkText: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: Layout.spacing["2xl"],
-  },
-  footerText: {
-    fontSize: fontSize.sm,
-  },
-});

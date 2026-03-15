@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
   Alert,
@@ -13,9 +12,6 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/hooks/useAuth";
 import { validateEmail } from "@app-template/utils";
-import { Colors } from "@/constants/colors";
-import { Layout } from "@/constants/layout";
-import { fontSize, fontWeight } from "@app-template/ui";
 
 export default function ForgotPasswordScreen() {
   const { resetPassword } = useAuth();
@@ -49,28 +45,23 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardView}
+        className="flex-1"
       >
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <Text style={[styles.title, { color: Colors.light.text }]}>
+        <View className="flex-1 justify-center p-md">
+          <View className="mb-2xl">
+            <Text className="text-3xl font-bold text-gray-900 mb-xs">
               Reset Password
             </Text>
-            <Text
-              style={[
-                styles.subtitle,
-                { color: Colors.light.textSecondary },
-              ]}
-            >
+            <Text className="text-base text-gray-500">
               Enter your email to receive a reset link
             </Text>
           </View>
 
           {error && (
-            <Text style={[styles.errorText, { color: Colors.light.error }]}>
+            <Text className="text-sm text-error text-center mb-md">
               {error}
             </Text>
           )}
@@ -84,59 +75,22 @@ export default function ForgotPasswordScreen() {
             autoComplete="email"
           />
 
-          <View style={styles.buttons}>
+          <View className="mt-sm">
             <Button
               title="Send Reset Link"
               onPress={handleReset}
               loading={loading}
             />
-            <View style={styles.backButton}>
-              <Button
-                title="Back to Sign In"
-                onPress={() => router.back()}
-                variant="outline"
-              />
-            </View>
+          </View>
+          <View className="mt-sm">
+            <Button
+              title="Back to Sign In"
+              onPress={() => router.back()}
+              variant="outline"
+            />
           </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    padding: Layout.screenPadding,
-  },
-  header: {
-    marginBottom: Layout.spacing["2xl"],
-  },
-  title: {
-    fontSize: fontSize["3xl"],
-    fontWeight: fontWeight.bold,
-    marginBottom: Layout.spacing.xs,
-  },
-  subtitle: {
-    fontSize: fontSize.base,
-  },
-  errorText: {
-    fontSize: fontSize.sm,
-    textAlign: "center",
-    marginBottom: Layout.spacing.md,
-  },
-  buttons: {
-    marginTop: Layout.spacing.sm,
-  },
-  backButton: {
-    marginTop: Layout.spacing.sm,
-  },
-});

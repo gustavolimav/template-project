@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -14,9 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { useAuth } from "@/hooks/useAuth";
-import { Colors } from "@/constants/colors";
-import { Layout } from "@/constants/layout";
-import { fontSize, fontWeight } from "@app-template/ui";
+import { colors } from "@app-template/ui";
 
 export default function RegisterScreen() {
   const { signUpWithEmail } = useAuth();
@@ -48,28 +45,26 @@ export default function RegisterScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.keyboardView}
+        className="flex-1"
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerClassName="flex-grow justify-center p-md"
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.header}>
-            <Text style={[styles.title, { color: Colors.light.text }]}>
+          <View className="mb-2xl">
+            <Text className="text-3xl font-bold text-gray-900 mb-xs">
               Criar Conta
             </Text>
-            <Text
-              style={[styles.subtitle, { color: Colors.light.textSecondary }]}
-            >
+            <Text className="text-base text-gray-500">
               Cadastre-se para começar
             </Text>
           </View>
 
           {error && (
-            <Text style={[styles.errorText, { color: Colors.light.error }]}>
+            <Text className="text-sm text-error text-center mb-md">
               {error}
             </Text>
           )}
@@ -82,49 +77,39 @@ export default function RegisterScreen() {
 
           {/* LGPD consent — required before account creation (Art. 7, I) */}
           <TouchableOpacity
-            style={styles.consentRow}
+            className="flex-row items-start mt-md gap-sm"
             onPress={() => setConsentGiven((v) => !v)}
             activeOpacity={0.7}
           >
             <View
-              style={[
-                styles.checkbox,
-                {
-                  borderColor: consentGiven
-                    ? Colors.light.primary
-                    : Colors.light.border,
-                  backgroundColor: consentGiven
-                    ? Colors.light.primary
-                    : "transparent",
-                },
-              ]}
+              className="w-5 h-5 border-2 rounded justify-center items-center mt-0.5 shrink-0"
+              style={{
+                borderColor: consentGiven
+                  ? colors.primary[600]
+                  : colors.gray[200],
+                backgroundColor: consentGiven
+                  ? colors.primary[600]
+                  : "transparent",
+              }}
             >
               {consentGiven && (
-                <Text style={styles.checkmark}>✓</Text>
+                <Text className="text-white text-xs font-bold">✓</Text>
               )}
             </View>
-            <Text
-              style={[styles.consentText, { color: Colors.light.textSecondary }]}
-            >
+            <Text className="flex-1 text-sm text-gray-500 leading-5">
               Li e concordo com a{" "}
-              <Text style={{ color: Colors.light.primary }}>
-                Política de Privacidade
-              </Text>{" "}
+              <Text className="text-primary-600">Política de Privacidade</Text>{" "}
               e autorizo o tratamento dos meus dados pessoais conforme a{" "}
-              <Text style={{ color: Colors.light.primary }}>LGPD</Text>.
+              <Text className="text-primary-600">LGPD</Text>.
             </Text>
           </TouchableOpacity>
 
           <OAuthButtons />
 
-          <View style={styles.footer}>
-            <Text
-              style={[styles.footerText, { color: Colors.light.textSecondary }]}
-            >
-              Já tem uma conta?{" "}
-            </Text>
+          <View className="flex-row justify-center mt-2xl">
+            <Text className="text-sm text-gray-500">Já tem uma conta? </Text>
             <Link href="/(auth)/login">
-              <Text style={[styles.linkText, { color: Colors.light.primary }]}>
+              <Text className="text-sm font-medium text-primary-600">
                 Entrar
               </Text>
             </Link>
@@ -134,72 +119,3 @@ export default function RegisterScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    padding: Layout.screenPadding,
-  },
-  header: {
-    marginBottom: Layout.spacing["2xl"],
-  },
-  title: {
-    fontSize: fontSize["3xl"],
-    fontWeight: fontWeight.bold,
-    marginBottom: Layout.spacing.xs,
-  },
-  subtitle: {
-    fontSize: fontSize.base,
-  },
-  errorText: {
-    fontSize: fontSize.sm,
-    textAlign: "center",
-    marginBottom: Layout.spacing.md,
-  },
-  consentRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginTop: Layout.spacing.md,
-    gap: Layout.spacing.sm,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderWidth: 2,
-    borderRadius: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 2,
-    flexShrink: 0,
-  },
-  checkmark: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  consentText: {
-    flex: 1,
-    fontSize: fontSize.sm,
-    lineHeight: 20,
-  },
-  linkText: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: Layout.spacing["2xl"],
-  },
-  footerText: {
-    fontSize: fontSize.sm,
-  },
-});

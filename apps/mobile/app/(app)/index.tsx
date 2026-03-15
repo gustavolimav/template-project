@@ -2,17 +2,14 @@ import React from "react";
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { router, type Href } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile, useDeleteAccount, useDataExport } from "@/hooks/useProfile";
-import { Colors } from "@/constants/colors";
-import { Layout } from "@/constants/layout";
-import { fontSize, fontWeight } from "@app-template/ui";
 
 function getInitials(email: string | undefined): string {
   if (!email) return "??";
@@ -36,34 +33,29 @@ function SettingsRow({
   destructive?: boolean;
 }) {
   return (
-    <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.7}>
-      <View style={styles.rowText}>
+    <TouchableOpacity
+      className="flex-row items-center py-md px-lg min-h-[56px]"
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <View className="flex-1">
         <Text
-          style={[
-            styles.rowLabel,
-            { color: destructive ? Colors.light.error : Colors.light.text },
-          ]}
+          className={`text-base ${destructive ? "text-error" : "text-gray-900"}`}
         >
           {label}
         </Text>
         {sublabel && (
-          <Text
-            style={[styles.rowSublabel, { color: Colors.light.textSecondary }]}
-          >
-            {sublabel}
-          </Text>
+          <Text className="text-xs text-gray-500 mt-0.5">{sublabel}</Text>
         )}
       </View>
-      <Text style={[styles.chevron, { color: Colors.light.textSecondary }]}>
-        ›
-      </Text>
+      <Text className="text-xl text-gray-500 ml-sm">›</Text>
     </TouchableOpacity>
   );
 }
 
 function SectionHeader({ title }: { title: string }) {
   return (
-    <Text style={[styles.sectionHeader, { color: Colors.light.textSecondary }]}>
+    <Text className="text-xs font-semibold text-gray-500 tracking-wide mb-xs mt-md px-xs">
       {title}
     </Text>
   );
@@ -130,35 +122,24 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView
-      style={[styles.safeArea, { backgroundColor: Colors.light.background }]}
-    >
+    <SafeAreaView className="flex-1 bg-white">
       <ScrollView
-        contentContainerStyle={styles.scroll}
+        contentContainerClassName="p-md pb-16"
         showsVerticalScrollIndicator={false}
       >
         {/* Profile card */}
-        <View
-          style={[styles.profileCard, { backgroundColor: Colors.light.card }]}
-        >
-          <View
-            style={[styles.avatar, { backgroundColor: Colors.light.primary }]}
-          >
-            <Text style={styles.avatarText}>{getInitials(email)}</Text>
+        <View className="bg-gray-50 rounded-lg p-xl items-center mb-xl">
+          <View className="w-[72px] h-[72px] rounded-full bg-primary-600 justify-center items-center mb-md">
+            <Text className="text-white text-xl font-bold">
+              {getInitials(email)}
+            </Text>
           </View>
-          <Text style={[styles.displayName, { color: Colors.light.text }]}>
+          <Text className="text-xl font-semibold text-gray-900 mb-xs">
             {displayName}
           </Text>
-          <Text style={[styles.email, { color: Colors.light.textSecondary }]}>
-            {email}
-          </Text>
+          <Text className="text-sm text-gray-500 mb-xs">{email}</Text>
           {memberSince && (
-            <Text
-              style={[
-                styles.memberSince,
-                { color: Colors.light.textSecondary },
-              ]}
-            >
+            <Text className="text-xs text-gray-500">
               Membro desde {memberSince}
             </Text>
           )}
@@ -166,7 +147,13 @@ export default function HomeScreen() {
 
         {/* Conta */}
         <SectionHeader title="CONTA" />
-        <View style={[styles.card, { backgroundColor: Colors.light.card }]}>
+        <View className="bg-gray-50 rounded-lg overflow-hidden">
+          <SettingsRow
+            label="Editar Perfil"
+            sublabel="Alterar nome e foto"
+            onPress={() => router.push("/(app)/edit-profile" as Href)}
+          />
+          <View className="h-px bg-gray-200 ml-lg" />
           <SettingsRow
             label="Sair"
             sublabel="Encerrar a sessão atual"
@@ -176,18 +163,13 @@ export default function HomeScreen() {
 
         {/* Privacidade e Dados — LGPD */}
         <SectionHeader title="PRIVACIDADE E DADOS" />
-        <View style={[styles.card, { backgroundColor: Colors.light.card }]}>
+        <View className="bg-gray-50 rounded-lg overflow-hidden">
           <SettingsRow
             label="Exportar meus dados"
             sublabel="Baixar uma cópia das suas informações (LGPD Art. 18, V)"
             onPress={handleExportData}
           />
-          <View
-            style={[
-              styles.separator,
-              { backgroundColor: Colors.light.border },
-            ]}
-          />
+          <View className="h-px bg-gray-200 ml-lg" />
           <SettingsRow
             label="Excluir minha conta"
             sublabel="Apagar permanentemente sua conta e dados (LGPD Art. 18, IV)"
@@ -197,9 +179,7 @@ export default function HomeScreen() {
         </View>
 
         {/* LGPD notice */}
-        <Text
-          style={[styles.lgpdNotice, { color: Colors.light.textSecondary }]}
-        >
+        <Text className="text-xs text-gray-500 text-center mt-xl px-md leading-5">
           Seus dados são tratados conforme a Lei Geral de Proteção de Dados
           (LGPD — Lei 13.709/2018). Você tem o direito de acessar, corrigir,
           exportar ou excluir suas informações pessoais a qualquer momento.
@@ -208,88 +188,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  scroll: {
-    padding: Layout.screenPadding,
-    paddingBottom: Layout.spacing["3xl"],
-  },
-  profileCard: {
-    borderRadius: Layout.borderRadius.lg,
-    padding: Layout.spacing.xl,
-    alignItems: "center",
-    marginBottom: Layout.spacing.xl,
-  },
-  avatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: Layout.spacing.md,
-  },
-  avatarText: {
-    color: "#fff",
-    fontSize: fontSize.xl,
-    fontWeight: fontWeight.bold,
-  },
-  displayName: {
-    fontSize: fontSize.xl,
-    fontWeight: fontWeight.semibold,
-    marginBottom: Layout.spacing.xs,
-  },
-  email: {
-    fontSize: fontSize.sm,
-    marginBottom: Layout.spacing.xs,
-  },
-  memberSince: {
-    fontSize: fontSize.xs,
-  },
-  sectionHeader: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.semibold,
-    letterSpacing: 0.8,
-    marginBottom: Layout.spacing.xs,
-    marginTop: Layout.spacing.md,
-    paddingHorizontal: Layout.spacing.xs,
-  },
-  card: {
-    borderRadius: Layout.borderRadius.lg,
-    overflow: "hidden",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: Layout.spacing.md,
-    paddingHorizontal: Layout.spacing.lg,
-    minHeight: 56,
-  },
-  rowText: {
-    flex: 1,
-  },
-  rowLabel: {
-    fontSize: fontSize.base,
-  },
-  rowSublabel: {
-    fontSize: fontSize.xs,
-    marginTop: 2,
-  },
-  chevron: {
-    fontSize: 20,
-    marginLeft: Layout.spacing.sm,
-  },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    marginLeft: Layout.spacing.lg,
-  },
-  lgpdNotice: {
-    fontSize: fontSize.xs,
-    lineHeight: 18,
-    textAlign: "center",
-    marginTop: Layout.spacing.xl,
-    paddingHorizontal: Layout.spacing.md,
-  },
-});

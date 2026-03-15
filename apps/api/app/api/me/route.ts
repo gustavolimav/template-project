@@ -42,22 +42,28 @@ export async function GET(request: Request) {
 
 /**
  * PATCH /api/me — Updates the authenticated user's profile.
- * Body: { displayName?: string }
+ * Body: { displayName?: string; avatarUrl?: string }
  */
 export async function PATCH(request: Request) {
   try {
     const { userId } = await requireAuth(request);
-    const body = await parseBody<{ displayName?: string }>(request);
+    const body = await parseBody<{ displayName?: string; avatarUrl?: string }>(
+      request,
+    );
 
     if (body.displayName !== undefined && typeof body.displayName !== "string") {
       throw new ValidationError("displayName must be a string");
+    }
+    if (body.avatarUrl !== undefined && typeof body.avatarUrl !== "string") {
+      throw new ValidationError("avatarUrl must be a string");
     }
 
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("profiles")
       .update({
-        display_name: body.displayName,
+        ...(body.displayName !== undefined && { display_name: body.displayName }),
+        ...(body.avatarUrl !== undefined && { avatar_url: body.avatarUrl }),
         updated_at: new Date().toISOString(),
       })
       .eq("id", userId)

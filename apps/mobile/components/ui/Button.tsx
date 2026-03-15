@@ -1,13 +1,6 @@
 import React from "react";
-import {
-  TouchableOpacity,
-  Text,
-  ActivityIndicator,
-  StyleSheet,
-} from "react-native";
-import { Colors } from "@/constants/colors";
-import { Layout } from "@/constants/layout";
-import { fontSize, fontWeight } from "@app-template/ui";
+import { TouchableOpacity, Text, ActivityIndicator } from "react-native";
+import { colors } from "@app-template/ui";
 
 interface ButtonProps {
   title: string;
@@ -25,40 +18,34 @@ export function Button({
   variant = "primary",
 }: ButtonProps) {
   const isDisabled = disabled || loading;
-  const colors = Colors.light;
+
+  const buttonClass = [
+    "h-12 rounded-md justify-center items-center px-lg",
+    variant === "primary" && "bg-primary-600",
+    variant === "secondary" && "bg-gray-50",
+    variant === "outline" && "bg-transparent border border-gray-200",
+    isDisabled && "opacity-50",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <TouchableOpacity
-      style={[
-        styles.button,
-        variant === "primary" && {
-          backgroundColor: colors.primary,
-        },
-        variant === "secondary" && {
-          backgroundColor: colors.card,
-        },
-        variant === "outline" && {
-          backgroundColor: "transparent",
-          borderWidth: 1,
-          borderColor: colors.border,
-        },
-        isDisabled && styles.disabled,
-      ]}
+      className={buttonClass}
       onPress={onPress}
       disabled={isDisabled}
       activeOpacity={0.7}
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === "primary" ? colors.primaryText : colors.primary}
+          color={variant === "primary" ? colors.white : colors.primary[600]}
         />
       ) : (
         <Text
-          style={[
-            styles.text,
-            variant === "primary" && { color: colors.primaryText },
-            variant !== "primary" && { color: colors.primary },
-          ]}
+          className={[
+            "text-base font-semibold",
+            variant === "primary" ? "text-white" : "text-primary-600",
+          ].join(" ")}
         >
           {title}
         </Text>
@@ -66,20 +53,3 @@ export function Button({
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    height: Layout.buttonHeight,
-    borderRadius: Layout.borderRadius.md,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: Layout.spacing.lg,
-  },
-  text: {
-    fontSize: fontSize.base,
-    fontWeight: fontWeight.semibold,
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-});
