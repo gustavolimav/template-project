@@ -6,6 +6,19 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./mui-theme": "./src/mui-theme.ts"
+  },
+  "peerDependencies": {
+    "@mui/material": ">=6.0.0",
+    "@emotion/react": ">=11.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@mui/material": {
+      "optional": true
+    },
+    "@emotion/react": {
+      "optional": true
+    }
   }
 }

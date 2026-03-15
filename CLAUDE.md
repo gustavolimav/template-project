@@ -8,25 +8,26 @@ AI-first iOS app template built as a Turborepo monorepo. Designed to be the star
 
 ## Tech Stack
 
-| Technology       | Purpose                             | Version              |
-| ---------------- | ----------------------------------- | -------------------- |
-| Turborepo        | Monorepo build system               | ^2.3                 |
-| pnpm             | Package manager                     | 9.x                  |
-| TypeScript       | Language (strict mode)              | ^5.7                 |
-| Next.js          | Backend API (App Router)            | ^15.1                |
-| Expo             | Mobile app framework                | ~52.0                |
-| React Native     | Mobile UI                           | 0.76.x               |
-| NativeWind       | Tailwind CSS for React Native       | v4 (nativewind@next) |
-| Supabase         | Database + Auth + Storage           | ^2.49                |
-| jose             | JWT verification (Edge-compatible)  | ^5.9                 |
-| TanStack Query   | Server state management             | ^5.62                |
-| MMKV             | Fast local storage                  | ^3.1                 |
-| Axios            | HTTP client                         | ^1.7                 |
-| Vitest           | Testing (API + packages)            | ^2.1                 |
-| Jest + jest-expo | Testing (mobile)                    | ^29.7                |
-| husky            | Git hooks                           | ^9.1                 |
-| commitlint       | Conventional commit enforcement     | ^20.4                |
-| standard-version | Semver bumps + changelog generation | ^9.5                 |
+| Technology        | Purpose                             | Version              |
+| ----------------- | ----------------------------------- | -------------------- |
+| Turborepo         | Monorepo build system               | ^2.3                 |
+| pnpm              | Package manager                     | 9.x                  |
+| TypeScript        | Language (strict mode)              | ^5.7                 |
+| Next.js           | Backend API (App Router)            | ^15.1                |
+| Expo              | Mobile app framework                | ~52.0                |
+| React Native      | Mobile UI                           | 0.76.x               |
+| NativeWind        | Tailwind CSS for React Native       | v4 (nativewind@next) |
+| Supabase          | Database + Auth + Storage           | ^2.49                |
+| jose              | JWT verification (Edge-compatible)  | ^5.9                 |
+| TanStack Query    | Server state management             | ^5.62                |
+| MMKV              | Fast local storage                  | ^3.1                 |
+| Axios             | HTTP client                         | ^1.7                 |
+| Vitest            | Testing (API + packages)            | ^2.1                 |
+| Jest + jest-expo  | Testing (mobile)                    | ^29.7                |
+| husky             | Git hooks                           | ^9.1                 |
+| commitlint        | Conventional commit enforcement     | ^20.4                |
+| standard-version  | Semver bumps + changelog generation | ^9.5                 |
+| MUI (Material UI) | Web UI components for API pages     | ^6.x                 |
 
 ## Architecture
 
@@ -157,6 +158,58 @@ All Tailwind custom values are defined in `apps/mobile/tailwind.config.js` and m
 - Use design token classes (`text-primary-600`, `p-md`, `rounded-lg`) not arbitrary values (`p-[12px]`)
 - `SafeAreaView` as outermost wrapper on every screen
 - `KeyboardAvoidingView` with `behavior={Platform.OS === "ios" ? "padding" : "height"}` on forms
+
+## MUI Web UI (API Landing Page & Future Web Pages)
+
+The API app uses Material UI v6 for all web pages. **Only `apps/api` uses MUI** — the mobile app does not install it.
+
+### Setup
+
+- **Packages** (in `apps/api`): `@mui/material`, `@mui/material-nextjs`, `@emotion/react`, `@emotion/styled`, `@emotion/cache`
+- **Shared theme** (`packages/ui/src/mui-theme.ts`): dark MUI theme derived from design tokens in `packages/ui/src/theme.ts`
+- **SSR adapter** (`apps/api/components/ThemeRegistry.tsx`): wraps children in `AppRouterCacheProvider` → `ThemeProvider` → `CssBaseline`
+- **Root layout** (`apps/api/app/layout.tsx`): renders `<ThemeRegistry>` to apply theme globally
+
+### Why the subpath export pattern
+
+`packages/ui` exposes the MUI theme via `"./mui-theme"` subpath export, **not** via the main `"."` index. This prevents MUI from being imported into the mobile app (which doesn't install it), keeping the mobile bundle clean.
+
+```typescript
+// Correct — only in apps/api
+import { muiTheme } from "@app-template/ui/mui-theme";
+
+// Wrong — never import from main index
+import { muiTheme } from "@app-template/ui"; // would break mobile
+```
+
+### Rules for writing API web pages
+
+- **Always use MUI components** — no raw HTML elements with `style` objects or inline CSS
+- Use `Container` for page layout, `Box` for spacing/layout, `Typography` for text
+- Use `Paper variant="outlined"` for cards and code blocks
+- Use `Chip` for method badges and auth indicators
+- Use `TableContainer + Table + TableHead + TableBody + TableRow + TableCell` for data tables
+- `CssBaseline` is already applied globally via `ThemeRegistry` — do not add it again in individual pages
+- The theme's `palette.mode` is `"dark"` — use semantic color tokens (`color="text.secondary"`, `bgcolor="action.hover"`) not hex values
+
+### Example page structure
+
+```tsx
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+
+export default function MyPage() {
+  return (
+    <Container maxWidth="md" sx={{ py: 8 }}>
+      <Typography variant="h4" fontWeight={700} color="white">
+        Title
+      </Typography>
+      <Box sx={{ mb: 5 }}>{/* content */}</Box>
+    </Container>
+  );
+}
+```
 
 ## Profile Management
 

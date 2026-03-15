@@ -1,271 +1,445 @@
-export default function HomePage() {
-  return (
-    <main style={styles.main}>
-      <div style={styles.container}>
-        <div style={styles.header}>
-          <h1 style={styles.title}>app-template API</h1>
-          <span style={styles.badge}>v1.0.0</span>
-        </div>
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
-        <p style={styles.description}>
-          Backend API for the app-template mobile app. Built with Next.js 15,
-          Supabase Auth, and JWT verification.
-        </p>
+// ─── Data ──────────────────────────────────────────────────────────────────
 
-        <section style={styles.section}>
-          <h2 style={styles.sectionTitle}>Endpoints</h2>
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.th}>Method</th>
-                <th style={styles.th}>Path</th>
-                <th style={styles.th}>Auth</th>
-                <th style={styles.th}>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {endpoints.map((e, i) => (
-                <tr key={i} style={i % 2 === 0 ? styles.trEven : styles.trOdd}>
-                  <td style={styles.td}>
-                    <code style={{ ...styles.code, ...methodColor(e.method) }}>
-                      {e.method}
-                    </code>
-                  </td>
-                  <td style={styles.td}>
-                    <code style={styles.code}>{e.path}</code>
-                  </td>
-                  <td style={styles.td}>
-                    <span style={e.auth ? styles.authRequired : styles.authPublic}>
-                      {e.auth ? "Bearer JWT" : "Public"}
-                    </span>
-                  </td>
-                  <td style={styles.td}>{e.description}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+type Endpoint = {
+  method: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
+  path: string;
+  auth: boolean;
+  description: string;
+};
 
-        <section style={styles.section}>
-          <h2 style={styles.sectionTitle}>Response format</h2>
-          <pre style={styles.pre}>{`// Success
-{ "data": <T>, "error": null }
+type EndpointGroup = {
+  label: string;
+  endpoints: Endpoint[];
+};
 
-// Error
-{ "data": null, "error": { "code": "string", "message": "string" } }`}</pre>
-        </section>
-
-        <section style={styles.section}>
-          <h2 style={styles.sectionTitle}>Authentication</h2>
-          <pre style={styles.pre}>{`Authorization: Bearer <supabase_access_token>`}</pre>
-          <p style={styles.note}>
-            Obtain a token by signing in via the mobile app (Supabase Auth).
-            Tokens expire after 1 hour and are refreshed automatically.
-          </p>
-        </section>
-
-        <footer style={styles.footer}>
-          <a href="/api/health" style={styles.link}>
-            Health check →
-          </a>
-        </footer>
-      </div>
-    </main>
-  );
-}
-
-const endpoints = [
+const groups: EndpointGroup[] = [
   {
-    method: "GET",
-    path: "/api/health",
-    auth: false,
-    description: "Health check with database connectivity test",
+    label: "Health",
+    endpoints: [
+      {
+        method: "GET",
+        path: "/api/health",
+        auth: false,
+        description: "Health check with database connectivity test",
+      },
+    ],
   },
   {
-    method: "GET",
-    path: "/api/me",
-    auth: true,
-    description: "Returns the authenticated user's profile",
+    label: "User",
+    endpoints: [
+      {
+        method: "GET",
+        path: "/api/me",
+        auth: true,
+        description: "Returns the authenticated user's profile",
+      },
+      {
+        method: "PATCH",
+        path: "/api/me",
+        auth: true,
+        description: "Update display name and/or avatar URL",
+      },
+      {
+        method: "DELETE",
+        path: "/api/me",
+        auth: true,
+        description:
+          "Full account erasure — auth user + profile (LGPD Art. 18, IV)",
+      },
+      {
+        method: "GET",
+        path: "/api/me/data-export",
+        auth: true,
+        description: "Export all user data as JSON (LGPD Art. 18, V)",
+      },
+    ],
   },
   {
-    method: "GET",
-    path: "/api/auth/callback",
-    auth: false,
-    description: "OAuth2 redirect handler (code exchange)",
+    label: "Auth",
+    endpoints: [
+      {
+        method: "GET",
+        path: "/api/auth/callback",
+        auth: false,
+        description: "OAuth2 redirect handler (code exchange)",
+      },
+      {
+        method: "POST",
+        path: "/api/auth/forgot-password",
+        auth: false,
+        description: "Sends a password reset email",
+      },
+      {
+        method: "POST",
+        path: "/api/auth/reset-password",
+        auth: false,
+        description: "Consumes reset token and sets new password",
+      },
+      {
+        method: "GET",
+        path: "/api/auth/verify-email",
+        auth: false,
+        description: "Email verification token handler",
+      },
+    ],
   },
   {
-    method: "POST",
-    path: "/api/auth/forgot-password",
-    auth: false,
-    description: "Sends a password reset email",
-  },
-  {
-    method: "POST",
-    path: "/api/auth/reset-password",
-    auth: false,
-    description: "Consumes reset token and sets new password",
-  },
-  {
-    method: "GET",
-    path: "/api/auth/verify-email",
-    auth: false,
-    description: "Email verification token handler",
-  },
-  {
-    method: "GET",
-    path: "/api/admin/migrations",
-    auth: true,
-    description: "List all migrations and their applied status",
-  },
-  {
-    method: "POST",
-    path: "/api/admin/migrations",
-    auth: true,
-    description: "Run all pending migrations (?dry_run=true to preview)",
+    label: "Admin",
+    endpoints: [
+      {
+        method: "GET",
+        path: "/api/admin/migrations",
+        auth: true,
+        description: "List all migrations and their applied status",
+      },
+      {
+        method: "POST",
+        path: "/api/admin/migrations",
+        auth: true,
+        description: "Run all pending migrations (?dry_run=true to preview)",
+      },
+    ],
   },
 ];
 
-function methodColor(method: string): React.CSSProperties {
-  const colors: Record<string, React.CSSProperties> = {
-    GET: { color: "#22c55e" },
-    POST: { color: "#3b82f6" },
-    PUT: { color: "#f59e0b" },
-    DELETE: { color: "#ef4444" },
-  };
-  return colors[method] ?? {};
+const methodChipColor: Record<
+  string,
+  "success" | "primary" | "warning" | "error" | "default"
+> = {
+  GET: "success",
+  POST: "primary",
+  PATCH: "warning",
+  PUT: "warning",
+  DELETE: "error",
+};
+
+// ─── Sub-components ────────────────────────────────────────────────────────
+
+function MethodChip({ method }: { method: string }) {
+  return (
+    <Chip
+      label={method}
+      size="small"
+      color={methodChipColor[method] ?? "default"}
+      sx={{ fontFamily: "monospace", fontWeight: 700, minWidth: 64 }}
+    />
+  );
 }
 
-const styles: Record<string, React.CSSProperties> = {
-  main: {
-    minHeight: "100vh",
-    background: "#0f0f0f",
-    color: "#e5e5e5",
-    fontFamily:
-      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    padding: "0 16px",
-  },
-  container: {
-    maxWidth: 860,
-    margin: "0 auto",
-    padding: "48px 0 80px",
-  },
-  header: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 700,
-    margin: 0,
-    color: "#ffffff",
-  },
-  badge: {
-    fontSize: 12,
-    fontWeight: 600,
-    background: "#1a1a1a",
-    border: "1px solid #333",
-    borderRadius: 6,
-    padding: "2px 8px",
-    color: "#888",
-  },
-  description: {
-    color: "#888",
-    fontSize: 15,
-    lineHeight: 1.6,
-    marginBottom: 40,
-  },
-  section: {
-    marginBottom: 40,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: 600,
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.08em",
-    color: "#666",
-    marginBottom: 12,
-    margin: "0 0 12px",
-  },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse" as const,
-    fontSize: 14,
-    border: "1px solid #222",
-    borderRadius: 8,
-    overflow: "hidden",
-  },
-  th: {
-    textAlign: "left" as const,
-    padding: "10px 14px",
-    background: "#1a1a1a",
-    color: "#666",
-    fontWeight: 500,
-    fontSize: 12,
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.06em",
-    borderBottom: "1px solid #222",
-  },
-  td: {
-    padding: "10px 14px",
-    borderBottom: "1px solid #1a1a1a",
-    verticalAlign: "middle" as const,
-    fontSize: 13,
-  },
-  trEven: { background: "#111" },
-  trOdd: { background: "#0d0d0d" },
-  code: {
-    fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
-    fontSize: 12,
-    background: "#1a1a1a",
-    padding: "2px 6px",
-    borderRadius: 4,
-  },
-  authRequired: {
-    fontSize: 11,
-    fontWeight: 500,
-    background: "#1c1a12",
-    color: "#d4a017",
-    padding: "2px 7px",
-    borderRadius: 4,
-    border: "1px solid #3a3010",
-  },
-  authPublic: {
-    fontSize: 11,
-    fontWeight: 500,
-    background: "#0f1f0f",
-    color: "#4ade80",
-    padding: "2px 7px",
-    borderRadius: 4,
-    border: "1px solid #1a3a1a",
-  },
-  pre: {
-    background: "#111",
-    border: "1px solid #222",
-    borderRadius: 8,
-    padding: "16px 20px",
-    fontSize: 13,
-    fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-    color: "#a3e635",
-    overflowX: "auto" as const,
-    margin: 0,
-  },
-  note: {
-    color: "#666",
-    fontSize: 13,
-    lineHeight: 1.6,
-    marginTop: 10,
-    marginBottom: 0,
-  },
-  footer: {
-    marginTop: 56,
-    paddingTop: 24,
-    borderTop: "1px solid #1a1a1a",
-  },
-  link: {
-    color: "#3b82f6",
-    textDecoration: "none",
-    fontSize: 14,
-  },
-};
+function CodeSpan({ children }: { children: React.ReactNode }) {
+  return (
+    <Typography
+      component="code"
+      sx={{
+        fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+        fontSize: 12,
+        bgcolor: "action.selected",
+        px: 0.75,
+        py: 0.25,
+        borderRadius: 0.75,
+        letterSpacing: 0,
+      }}
+    >
+      {children}
+    </Typography>
+  );
+}
+
+function CodeBlock({ children }: { children: string }) {
+  return (
+    <Box
+      component="pre"
+      sx={{
+        m: 0,
+        p: 2,
+        bgcolor: "#0d0d0d",
+        border: "1px solid",
+        borderColor: "divider",
+        borderRadius: 1,
+        fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+        fontSize: 12.5,
+        color: "success.light",
+        overflowX: "auto",
+        lineHeight: 1.7,
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+// ─── Page ──────────────────────────────────────────────────────────────────
+
+export default function HomePage() {
+  const totalEndpoints = groups.reduce((n, g) => n + g.endpoints.length, 0);
+
+  return (
+    <Container maxWidth="md" sx={{ py: 8 }}>
+      {/* ── Hero ── */}
+      <Paper
+        variant="outlined"
+        sx={{
+          p: { xs: 3, sm: 4 },
+          mb: 5,
+          background:
+            "linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(99,102,241,0.06) 50%, transparent 100%)",
+          borderColor: "rgba(99,102,241,0.25)",
+        }}
+      >
+        <Stack
+          direction="row"
+          alignItems="center"
+          gap={1.5}
+          flexWrap="wrap"
+          mb={1.5}
+        >
+          <Typography
+            variant="h4"
+            component="h1"
+            fontWeight={800}
+            color="white"
+          >
+            app-template API
+          </Typography>
+          <Chip label="v1.1.0" size="small" variant="outlined" />
+          <Chip
+            icon={
+              <FiberManualRecordIcon
+                sx={{ fontSize: "10px !important", color: "success.main" }}
+              />
+            }
+            label="Online"
+            size="small"
+            variant="outlined"
+            color="success"
+            sx={{ borderRadius: 2 }}
+          />
+        </Stack>
+
+        <Typography variant="body1" color="text.secondary" mb={2.5}>
+          Backend API for the app-template mobile app. Built with Next.js 15,
+          Supabase Auth, and JWT verification.
+        </Typography>
+
+        <Stack direction="row" gap={1} flexWrap="wrap">
+          {["Next.js 15", "Supabase Auth", "TypeScript", "Vercel"].map((t) => (
+            <Chip
+              key={t}
+              label={t}
+              size="small"
+              sx={{ bgcolor: "action.selected" }}
+            />
+          ))}
+        </Stack>
+      </Paper>
+
+      {/* ── Stats row ── */}
+      <Grid container spacing={2} mb={5}>
+        {[
+          { value: totalEndpoints, label: "Endpoints" },
+          { value: "JWT", label: "Auth method" },
+          { value: "REST", label: "API style" },
+        ].map(({ value, label }) => (
+          <Grid size={{ xs: 4 }} key={label}>
+            <Paper
+              variant="outlined"
+              sx={{ p: 2, textAlign: "center", bgcolor: "background.paper" }}
+            >
+              <Typography variant="h5" fontWeight={700} color="white">
+                {value}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {label}
+              </Typography>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* ── Endpoint groups ── */}
+      <Typography
+        variant="overline"
+        color="text.secondary"
+        sx={{ mb: 1.5, display: "block" }}
+      >
+        Endpoints
+      </Typography>
+      <Stack gap={1} mb={5}>
+        {groups.map((group) => (
+          <Accordion
+            key={group.label}
+            defaultExpanded
+            disableGutters
+            variant="outlined"
+            sx={{
+              "&:before": { display: "none" },
+              bgcolor: "background.paper",
+            }}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Stack direction="row" alignItems="center" gap={1.5}>
+                <Typography fontWeight={600} fontSize={14}>
+                  {group.label}
+                </Typography>
+                <Chip
+                  label={group.endpoints.length}
+                  size="small"
+                  sx={{ bgcolor: "action.selected", height: 20, fontSize: 11 }}
+                />
+              </Stack>
+            </AccordionSummary>
+            <AccordionDetails sx={{ p: 0 }}>
+              <Divider />
+              <Table size="small">
+                <TableBody>
+                  {group.endpoints.map((e, i) => (
+                    <TableRow
+                      key={i}
+                      sx={{ "&:last-child td": { borderBottom: 0 } }}
+                    >
+                      <TableCell sx={{ width: 90, pl: 2 }}>
+                        <MethodChip method={e.method} />
+                      </TableCell>
+                      <TableCell sx={{ width: "35%" }}>
+                        <CodeSpan>{e.path}</CodeSpan>
+                      </TableCell>
+                      <TableCell sx={{ width: 110 }}>
+                        <Stack direction="row" alignItems="center" gap={0.5}>
+                          {e.auth ? (
+                            <>
+                              <LockOutlinedIcon
+                                sx={{ fontSize: 13, color: "warning.main" }}
+                              />
+                              <Typography
+                                variant="caption"
+                                color="warning.main"
+                                fontWeight={500}
+                              >
+                                JWT
+                              </Typography>
+                            </>
+                          ) : (
+                            <>
+                              <PublicOutlinedIcon
+                                sx={{ fontSize: 13, color: "success.main" }}
+                              />
+                              <Typography
+                                variant="caption"
+                                color="success.main"
+                                fontWeight={500}
+                              >
+                                Public
+                              </Typography>
+                            </>
+                          )}
+                        </Stack>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" color="text.secondary">
+                          {e.description}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </Stack>
+
+      {/* ── Quick reference ── */}
+      <Typography
+        variant="overline"
+        color="text.secondary"
+        sx={{ mb: 1.5, display: "block" }}
+      >
+        Quick reference
+      </Typography>
+      <Grid container spacing={2} mb={5}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <Paper variant="outlined" sx={{ p: 2.5, height: "100%" }}>
+            <Typography
+              variant="subtitle2"
+              fontWeight={600}
+              color="white"
+              mb={1.5}
+            >
+              Response envelope
+            </Typography>
+            <CodeBlock>{`// Success
+{ "data": <T>, "error": null }
+
+// Error
+{
+  "data": null,
+  "error": {
+    "code": "string",
+    "message": "string"
+  }
+}`}</CodeBlock>
+          </Paper>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <Paper variant="outlined" sx={{ p: 2.5, height: "100%" }}>
+            <Typography
+              variant="subtitle2"
+              fontWeight={600}
+              color="white"
+              mb={1.5}
+            >
+              Authentication header
+            </Typography>
+            <CodeBlock>{`Authorization: Bearer <token>`}</CodeBlock>
+            <Alert
+              severity="info"
+              variant="outlined"
+              sx={{ mt: 2, fontSize: 12 }}
+            >
+              Obtain tokens via Supabase Auth in the mobile app. Tokens expire
+              after 1 hour and refresh automatically.
+            </Alert>
+          </Paper>
+        </Grid>
+      </Grid>
+
+      {/* ── Footer ── */}
+      <Divider sx={{ mb: 3 }} />
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="caption" color="text.secondary">
+          app-template · v1.1.0
+        </Typography>
+        <Link
+          href="/api/health"
+          underline="hover"
+          variant="body2"
+          color="primary"
+        >
+          Health check →
+        </Link>
+      </Stack>
+    </Container>
+  );
+}

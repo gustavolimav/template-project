@@ -90,11 +90,11 @@ Categorized by priority. Each item includes rationale for why it matters.
 
 ### UI Component Library (Material UI)
 
-- [ ] Install `@mui/material` and `@emotion/react` / `@emotion/styled` in `apps/api`
-- [ ] Install `@mui/material-nextjs` adapter for Next.js App Router (SSR-safe theme injection)
-- [ ] Define shared theme in `packages/ui/src/mui-theme.ts` extending MUI default theme with project color palette
-- [ ] Replace raw HTML/CSS in API landing page and any future web pages with MUI components
-- [ ] Add `CssBaseline` to API root layout for consistent cross-browser baseline styles
+- [x] Install `@mui/material` and `@emotion/react` / `@emotion/styled` in `apps/api`
+- [x] Install `@mui/material-nextjs` adapter for Next.js App Router (SSR-safe theme injection)
+- [x] Define shared theme in `packages/ui/src/mui-theme.ts` extending MUI default theme with project color palette
+- [x] Replace raw HTML/CSS in API landing page and any future web pages with MUI components
+- [x] Add `CssBaseline` to API root layout for consistent cross-browser baseline styles
 - _Rationale: Production-ready component system; consistent web UI; pairs well with the existing design tokens in `packages/ui/src/theme.ts`_
 
 ## Lower Priority (Growth Features)
