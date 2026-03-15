@@ -46,9 +46,25 @@ Mobile (Expo) → Axios + Bearer JWT → Next.js API → Supabase PostgreSQL
 
 ## Environment Variables
 
-Get from `npx supabase status` after starting local Supabase:
-- `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (API)
-- `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_API_URL` (mobile)
+**API** (`apps/api/.env.local`) — variable names match the Supabase Vercel integration:
+- `NEXT_PUBLIC_SUPABASE_URL` — Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — anon/public key
+- `SUPABASE_SERVICE_ROLE_KEY` — service role key (server only)
+- `POSTGRES_URL_NON_POOLING` — direct Postgres URL for migrations
+- `ADMIN_SECRET` — bearer token for `/api/admin/*` endpoints
+
+**Mobile** (`apps/mobile/.env` for local dev; baked into EAS builds for preview/production):
+- `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_API_URL`
+
+**EAS build profiles** (`apps/mobile/eas.json`):
+- `development` — simulator build, reads local `.env`
+- `preview` — TestFlight internal, env vars in `eas.json`
+- `production` — App Store, env vars in `eas.json`
+
+## Database Migrations
+
+Local: `pnpm supabase:reset` (Supabase CLI)
+Production: `POST /api/admin/migrations` with `Authorization: Bearer $ADMIN_SECRET`
 
 ## Adding Features
 
