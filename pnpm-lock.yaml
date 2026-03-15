@@ -42,6 +42,9 @@ importers:
       "@app-template/types":
         specifier: workspace:*
         version: link:../../packages/types
+      "@app-template/ui":
+        specifier: workspace:*
+        version: link:../../packages/ui
       "@emotion/cache":
         specifier: ^11.14.0
         version: 11.14.0
@@ -51,6 +54,9 @@ importers:
       "@emotion/styled":
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react@19.1.0)
+      "@mui/icons-material":
+        specifier: ^7.3.9
+        version: 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.1.17)(react@19.1.0)
       "@mui/material":
         specifier: ^7.3.9
         version: 7.3.9(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -247,7 +253,14 @@ importers:
 
   packages/typescript-config: {}
 
-  packages/ui: {}
+  packages/ui:
+    dependencies:
+      "@emotion/react":
+        specifier: ">=11.0.0"
+        version: 11.14.0(@types/react@19.1.17)(react@19.1.0)
+      "@mui/material":
+        specifier: ">=6.0.0"
+        version: 7.3.9(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
 
   packages/utils:
     dependencies:
@@ -2260,6 +2273,20 @@ packages:
       {
         integrity: sha512-MOkOCTfbMJwLshlBCKJ59V2F/uaLYfmKnN76kksj6jlGUVdI25A9Hzs08m+zjBRdLv+sK7Rqdsefe8X7h/6PCw==,
       }
+
+  "@mui/icons-material@7.3.9":
+    resolution:
+      {
+        integrity: sha512-BT+zPJXss8Hg/oEMRmHl17Q97bPACG4ufFSfGEdhiE96jOyR5Dz1ty7ZWt1fVGR0y1p+sSgEwQT/MNZQmoWDCw==,
+      }
+    engines: { node: ">=14.0.0" }
+    peerDependencies:
+      "@mui/material": ^7.3.9
+      "@types/react": ~19.1.0
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      "@types/react":
+        optional: true
 
   "@mui/material-nextjs@7.3.9":
     resolution:
@@ -13553,6 +13580,14 @@ snapshots:
       "@jridgewell/sourcemap-codec": 1.5.5
 
   "@mui/core-downloads-tracker@7.3.9": {}
+
+  "@mui/icons-material@7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.1.17)(react@19.1.0)":
+    dependencies:
+      "@babel/runtime": 7.28.6
+      "@mui/material": 7.3.9(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react: 19.1.0
+    optionalDependencies:
+      "@types/react": 19.1.17
 
   "@mui/material-nextjs@7.3.9(@emotion/cache@11.14.0)(@emotion/react@11.14.0(@types/react@19.1.17)(react@19.1.0))(@types/react@19.1.17)(next@15.5.12(@opentelemetry/api@1.9.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)":
     dependencies:
