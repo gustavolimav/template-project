@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient();
     await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.SUPABASE_URL}/auth/v1/verify?type=recovery`,
+      redirectTo: `${process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/verify?type=recovery`,
     });
 
     // Always return success to prevent email enumeration

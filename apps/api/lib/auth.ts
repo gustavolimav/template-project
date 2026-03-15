@@ -7,14 +7,17 @@ import { AuthenticationError } from "./errors";
  */
 let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
 
+function getSupabaseUrl(): string {
+  const url =
+    process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!url) throw new Error("Missing SUPABASE_URL or NEXT_PUBLIC_SUPABASE_URL");
+  return url;
+}
+
 function getJWKS() {
   if (!jwks) {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    if (!supabaseUrl) {
-      throw new Error("Missing SUPABASE_URL environment variable");
-    }
     jwks = createRemoteJWKSet(
-      new URL(`${supabaseUrl}/auth/v1/.well-known/jwks.json`),
+      new URL(`${getSupabaseUrl()}/auth/v1/.well-known/jwks.json`),
     );
   }
   return jwks;
@@ -32,7 +35,7 @@ export interface AuthenticatedUser {
 export async function verifyToken(token: string): Promise<AuthenticatedUser> {
   try {
     const { payload } = await jwtVerify(token, getJWKS(), {
-      issuer: `${process.env.SUPABASE_URL}/auth/v1`,
+      issuer: `${getSupabaseUrl()}/auth/v1`,
     });
 
     const userId = payload.sub;
