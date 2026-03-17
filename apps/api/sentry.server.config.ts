@@ -9,6 +9,11 @@ import * as Sentry from "@sentry/nextjs";
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   tracesSampleRate: process.env.NODE_ENV === "production" ? 0.2 : 1.0,
+  sendDefaultPii: true,
+  // Attach local variable values to stack frames for richer debugging
+  includeLocalVariables: true,
+  // Forward Sentry.logger.* calls to Sentry Logs product
+  enableLogs: true,
   // Capture unhandled promise rejections and uncaught exceptions
   integrations: [Sentry.captureConsoleIntegration({ levels: ["error"] })],
 });

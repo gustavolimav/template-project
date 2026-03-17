@@ -9,22 +9,33 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.yourcompany.apptemplate",
+      "bundleIdentifier": "com.gustavolima.apptemplate",
       "config": {
         "usesNonExemptEncryption": false
       },
       "entitlements": {
-        "com.apple.developer.applesignin": [
-          "Default"
-        ]
+        "com.apple.developer.applesignin": ["Default"],
+        "aps-environment": "production"
       }
     },
     "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#4F46E5",
+          "sounds": [],
+          "iosDisplayInForeground": true
+        }
+      ],
       "expo-router",
       "expo-apple-authentication",
-      ["expo-image-picker", {
-        "photosPermission": "Permitir que $(BUNDLE_DISPLAY_NAME) acesse suas fotos para definir uma foto de perfil."
-      }],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir que $(BUNDLE_DISPLAY_NAME) acesse suas fotos para definir uma foto de perfil."
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -35,8 +46,8 @@
       [
         "@sentry/react-native/expo",
         {
-          "organization": "REPLACE_WITH_SENTRY_ORG",
-          "project": "REPLACE_WITH_SENTRY_PROJECT"
+          "organization": "gustavo-lima-0z",
+          "project": "template-app"
         }
       ]
     ],

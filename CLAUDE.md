@@ -239,6 +239,53 @@ Always use `upsert: true` and append `?v=Date.now()` to the public URL to bust t
 - `apps/mobile/hooks/useProfile.ts` — `useProfile()`, `useUpdateProfile()`, `useUploadAvatar()`
 - `useUploadAvatar` reads file with `import * as FileSystem from "expo-file-system/legacy"` — the `EncodingType` enum moved to the legacy export in SDK 52+
 
+## Push Notifications
+
+### Architecture
+
+```
+Sign-in / Sign-up
+  → AuthProvider.onAuthStateChange (SIGNED_IN)
+  → registerDeviceToken(userId)            # requests permission, upserts token
+  → supabase.from("device_tokens").upsert  # stored with RLS
+
+Server wants to notify user
+  → POST /api/notifications (Bearer ADMIN_SECRET)
+  → supabase.functions.invoke("send-notification", { userId, title, body, data })
+  → Edge Function fetches tokens from DB
+  → POST https://exp.host/--/api/v2/push/send
+  → Expo Push Service → APNs / FCM → device
+
+User taps notification
+  → useNotificationListeners (root _layout.tsx)
+  → data.screen exists → router.push(data.screen)
+```
+
+### Key Files
+
+- `supabase/functions/send-notification/index.ts` — Edge Function; fetches device tokens, calls Expo Push API
+- `supabase/migrations/00000000000003_device_tokens.sql` — `device_tokens` table + RLS
+- `apps/mobile/hooks/usePushNotifications.ts` — `registerDeviceToken`, `unregisterDeviceToken`, `useNotificationListeners`
+- `apps/api/app/api/notifications/route.ts` — `POST /api/notifications` (admin-protected, invokes Edge Function)
+
+### Deep Linking via Notifications
+
+Include `data.screen` in the notification payload to navigate on tap:
+
+```json
+{ "data": { "screen": "/(app)/settings" } }
+```
+
+Any valid Expo Router path works. The root layout's `useNotificationListeners` handles the routing.
+
+### Deployment Checklist
+
+1. Obtain EAS project ID (`eas init`) and pass it to `getExpoPushTokenAsync({ projectId: "..." })` in `hooks/usePushNotifications.ts`
+2. Add `aps-environment: production` entitlement in `app.json` → already done
+3. Build with EAS (`eas build --profile preview`) — APNs push key is configured automatically by EAS
+4. Deploy Edge Function: `supabase functions deploy send-notification`
+5. After adding the `device_tokens` migration, run `pnpm supabase:types` and commit
+
 ## Database Types
 
 Types are **auto-generated** from the live local Supabase schema. Never edit `database.generated.ts` manually.

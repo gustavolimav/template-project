@@ -6,10 +6,12 @@ Categorized by priority. Each item includes rationale for why it matters.
 
 ### Push Notifications
 
-- [ ] Set up `expo-notifications` with EAS
-- [ ] Create Supabase Edge Function for sending notifications
-- [ ] Register device tokens on auth
-- [ ] Handle notification deep links
+- [x] Set up `expo-notifications` with EAS (`app.json` plugin, `aps-environment` entitlement)
+- [x] Create Supabase Edge Function for sending notifications (`supabase/functions/send-notification/`)
+- [x] Register device tokens on auth (`hooks/usePushNotifications.ts`, `providers/AuthProvider.tsx`)
+- [x] Handle notification deep links (`useNotificationListeners` in root `_layout.tsx`, `data.screen` convention)
+- [ ] Obtain EAS project ID and pass it to `getExpoPushTokenAsync({ projectId })` before first build
+- [ ] Deploy Edge Function: `supabase functions deploy send-notification`
 - _Rationale: Expected by users; increases engagement and retention_
 
 ### Error Tracking

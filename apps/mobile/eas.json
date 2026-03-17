@@ -13,19 +13,19 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_SUPABASE_URL": "REPLACE_WITH_CLOUD_SUPABASE_URL",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "REPLACE_WITH_CLOUD_SUPABASE_ANON_KEY",
-        "EXPO_PUBLIC_API_URL": "REPLACE_WITH_VERCEL_URL",
-        "SENTRY_AUTH_TOKEN": "REPLACE_WITH_SENTRY_AUTH_TOKEN"
+        "EXPO_PUBLIC_SUPABASE_URL": "https://ghkqgkutlefaxpfyrqvd.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdoa3Fna3V0bGVmYXhwZnlycXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNDQxNDMsImV4cCI6MjA4ODkyMDE0M30.3Atd64x5v9So8qRn4A3EgFfKr4eWKRX-Mb62zZLz_cY",
+        "EXPO_PUBLIC_API_URL": "https://template-project-api.vercel.app",
+        "SENTRY_AUTH_TOKEN": "1d5547f6208211f1a05b1239c7ba822e"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_SUPABASE_URL": "REPLACE_WITH_CLOUD_SUPABASE_URL",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "REPLACE_WITH_CLOUD_SUPABASE_ANON_KEY",
-        "EXPO_PUBLIC_API_URL": "REPLACE_WITH_VERCEL_URL",
-        "SENTRY_AUTH_TOKEN": "REPLACE_WITH_SENTRY_AUTH_TOKEN"
+        "EXPO_PUBLIC_SUPABASE_URL": "https://ghkqgkutlefaxpfyrqvd.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdoa3Fna3V0bGVmYXhwZnlycXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNDQxNDMsImV4cCI6MjA4ODkyMDE0M30.3Atd64x5v9So8qRn4A3EgFfKr4eWKRX-Mb62zZLz_cYI",
+        "EXPO_PUBLIC_API_URL": "https://template-project-api.vercel.app",
+        "SENTRY_AUTH_TOKEN": "1d5547f6208211f1a05b1239c7ba822e"
       }
     }
   },
