@@ -11,16 +11,16 @@ Categorized by priority. Each item includes rationale for why it matters.
 - [x] Register device tokens on auth (`hooks/usePushNotifications.ts`, `providers/AuthProvider.tsx`)
 - [x] Handle notification deep links (`useNotificationListeners` in root `_layout.tsx`, `data.screen` convention)
 - [ ] Obtain EAS project ID and pass it to `getExpoPushTokenAsync({ projectId })` before first build
-- [ ] Deploy Edge Function: `supabase functions deploy send-notification`
+- [x] Deploy Edge Function: `supabase functions deploy send-notification`
 - _Rationale: Expected by users; increases engagement and retention_
 
 ### Error Tracking
 
 - [x] Add `@sentry/react-native` to mobile (`lib/sentry.ts`, `app/_layout.tsx`)
-- [x] Add `@sentry/nextjs` to API (`sentry.server.config.ts`, `sentry.edge.config.ts`, `next.config.ts`)
+- [x] Add `@sentry/nextjs` to API (`sentry.server.config.ts`, `sentry.edge.config.ts`, `next.config.ts`, `instrumentation.ts`, `global-error.tsx`)
 - [x] Configure source map uploading in EAS build (`eas.json` + `@sentry/react-native/expo` plugin)
 - [ ] Set up error alerting — configure in Sentry dashboard: Alerts → Create Alert Rule
-- [ ] Fill in `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_DSN`, `SENTRY_AUTH_TOKEN` in env files + Vercel
+- [x] Fill in `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_DSN`, `SENTRY_AUTH_TOKEN` in env files + Vercel
 - _Rationale: Cannot fix bugs you cannot see; critical before real users_
 
 ### CI/CD Pipeline
