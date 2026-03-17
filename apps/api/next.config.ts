@@ -36,4 +36,6 @@ export default withSentryConfig(nextConfig, {
   sourcemaps: { deleteSourcemapsAfterUpload: true },
   // Reduces bundle size by tree-shaking debug code
   disableLogger: true,
+  // Proxy Sentry requests through /monitoring to bypass ad-blockers
+  tunnelRoute: "/monitoring",
 });
