@@ -38,7 +38,9 @@ export async function getExpoPushToken(): Promise<string | null> {
   }
 
   try {
-    const token = await Notifications.getExpoPushTokenAsync();
+    const token = await Notifications.getExpoPushTokenAsync({
+      projectId: "ee9afc91-c642-4840-84e1-f4f88a3090e5",
+    });
     return token.data;
   } catch {
     // Silently fail on simulators / devices without push capability

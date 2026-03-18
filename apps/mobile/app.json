@@ -53,6 +53,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ee9afc91-c642-4840-84e1-f4f88a3090e5"
+      }
+    },
+    "owner": "gugalvm"
   }
 }

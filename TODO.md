@@ -10,7 +10,7 @@ Categorized by priority. Each item includes rationale for why it matters.
 - [x] Create Supabase Edge Function for sending notifications (`supabase/functions/send-notification/`)
 - [x] Register device tokens on auth (`hooks/usePushNotifications.ts`, `providers/AuthProvider.tsx`)
 - [x] Handle notification deep links (`useNotificationListeners` in root `_layout.tsx`, `data.screen` convention)
-- [ ] Obtain EAS project ID and pass it to `getExpoPushTokenAsync({ projectId })` before first build
+- [x] Obtain EAS project ID and pass it to `getExpoPushTokenAsync({ projectId })` before first build
 - [x] Deploy Edge Function: `supabase functions deploy send-notification`
 - _Rationale: Expected by users; increases engagement and retention_
 
