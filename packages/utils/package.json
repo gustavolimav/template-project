@@ -14,12 +14,13 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "date-fns": "^3.6.0",
-    "@app-template/types": "workspace:*"
+    "@app-template/types": "workspace:*",
+    "date-fns": "^3.6.0"
   },
   "devDependencies": {
+    "@app-template/typescript-config": "workspace:*",
+    "@vitest/coverage-v8": "^2.1.9",
     "typescript": "^5.7.0",
-    "vitest": "^2.1.0",
-    "@app-template/typescript-config": "workspace:*"
+    "vitest": "^2.1.0"
   }
 }
