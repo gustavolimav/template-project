@@ -129,7 +129,7 @@ Categorized by priority. Each item includes rationale for why it matters.
 - [ ] E2E tests with Detox or Maestro
 - [ ] API integration tests against local Supabase
 - [ ] Visual regression tests for components
-- [ ] Coverage thresholds in CI
+- [x] Coverage thresholds in CI (vitest `@vitest/coverage-v8`, jest `coverageThreshold`)
 - _Rationale: Confidence for rapid iteration_
 
 ### Performance
