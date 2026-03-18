@@ -4,7 +4,7 @@
 
 AI-first iOS app template built as a Turborepo monorepo. Designed to be the starting point for many future projects. Features real authentication (Supabase Auth with JWT, OAuth2), a Next.js API backend, and an Expo React Native mobile app targeting the Apple App Store. LGPD-compliant by default (Brazilian data protection law).
 
-**Current version**: 1.1.0
+**Current version**: 1.2.0
 
 ## Tech Stack
 

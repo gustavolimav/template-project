@@ -1,5 +1,42 @@
 # Changelog
 
+## v1.2.0 — Push Notifications & Error Tracking (2026-03-17)
+
+### Features
+
+**Push Notifications (End-to-End)**
+
+- `device_tokens` table with RLS — stores Expo push tokens per user/device (`supabase/migrations/00000000000003_device_tokens.sql`)
+- `registerDeviceToken` / `unregisterDeviceToken` called on sign-in/sign-out (`hooks/usePushNotifications.ts`)
+- `useNotificationListeners` in root `_layout.tsx` — navigates to `data.screen` on notification tap
+- Supabase Edge Function `send-notification` — fetches device tokens, calls Expo Push API, handles errors per-token (`supabase/functions/send-notification/`)
+- `POST /api/notifications` — admin-protected API endpoint that invokes the Edge Function (`apps/api/app/api/notifications/route.ts`)
+- EAS project ID configured (`ee9afc91-c642-4840-84e1-f4f88a3090e5`) in `getExpoPushTokenAsync` and `app.json`
+
+**Error Tracking (Sentry)**
+
+- **API**: `@sentry/nextjs` with separate configs for Node.js server, Edge runtime, and browser
+  - `sentry.server.config.ts` — server-side with `includeLocalVariables`, `sendDefaultPii`, `enableLogs`
+  - `sentry.edge.config.ts` — edge runtime config
+  - `sentry.client.config.ts` — browser-side with replay integration
+  - `instrumentation.ts` — `onRequestError = Sentry.captureRequestError` for automatic unhandled error capture
+  - `app/global-error.tsx` — App Router root error boundary
+  - `tunnelRoute: "/monitoring"` in `withSentryConfig()` to bypass ad-blockers
+- **Mobile**: `@sentry/react-native` initialized in `app/_layout.tsx` (`lib/sentry.ts`)
+  - Source maps uploaded automatically on EAS builds via `@sentry/react-native/expo` plugin
+- Both environments report to the same Sentry project, differentiated by `environment` tag
+
+### Architecture Notes
+
+| Decision                                   | Rationale                                                                                        |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| Single Sentry project for all environments | `environment` tag separates preview/production; simpler to manage than multiple projects         |
+| Expo Push Service (not APNs directly)      | Expo handles APNs/FCM credentials automatically via EAS; no Apple Developer portal config needed |
+| Admin-protected `/api/notifications`       | Server-to-server only; prevents unauthenticated push spam                                        |
+| `tunnelRoute: "/monitoring"`               | Routes Sentry traffic through own domain to avoid ad-blocker false positives                     |
+
+---
+
 ## v1.1.0 — Auth Flow, UI, Profile & Developer Experience (2026-03-14)
 
 ### Features

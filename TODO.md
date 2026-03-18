@@ -55,7 +55,7 @@ Categorized by priority. Each item includes rationale for why it matters.
 - [ ] Configure `expo-linking` with custom scheme
 - [ ] Universal links for iOS (apple-app-site-association)
 - [ ] Handle auth callback deep links
-- [ ] Handle notification deep links
+- [x] Handle notification deep links
 - _Rationale: Enables sharing, marketing links, notification taps_
 
 ### Dark Mode
