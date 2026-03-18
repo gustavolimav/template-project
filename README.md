@@ -1,6 +1,6 @@
 # App Template
 
-**v1.1.0** — AI-first iOS app template. Production-ready monorepo with real authentication, LGPD compliance, and full developer tooling.
+**v1.2.0** — AI-first iOS app template. Production-ready monorepo with real authentication, LGPD compliance, and full developer tooling.
 
 Built with Turborepo · Next.js 15 · Expo SDK 52 · Supabase · NativeWind v4
 
@@ -196,3 +196,7 @@ pnpm supabase:types
 # 5. Commit both files
 git add supabase/migrations/ packages/types/src/database.generated.ts
 ```
+
+## License
+
+PolyForm Noncommercial License 1.0.0 — free for personal and non-commercial use. Commercial use requires written permission from the author. See [LICENSE](LICENSE) for details.
